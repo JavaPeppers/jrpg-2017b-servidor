@@ -12,14 +12,14 @@
 
 ### Integrantes del equipo
 
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
+* Lucas Quinteiro ([Lucasq95](https://github.com/Lucasq95))
+* Lautaro Perez ([LautaroPerez](https://github.com/LautaroPerez))
+* Micaela De Rito ([micaderito](https://github.com/micaderito))
+* Facundo Mediotte ([FMediotte96](https://github.com/FMediotte96))
+* Tomás Reynoso ([ThomiReynoso](https://github.com/FMediotte96))
+* Pablo Bermudez ([pablobermudez](https://github.com/pablobermudez))
+* Lisa Ayala ([lisa-ayala](https://github.com/lisa-ayala))
+* Alexis Sessarego ([Halaris](https://github.com/Halaris))
 
 ## Sobre la tecnología
 * Java 1.8
