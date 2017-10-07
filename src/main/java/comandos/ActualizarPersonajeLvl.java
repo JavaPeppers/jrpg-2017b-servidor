@@ -1,4 +1,4 @@
-package comandos;
+	package comandos;
 
 import java.io.IOException;
 
@@ -16,6 +16,7 @@ public class ActualizarPersonajeLvl extends ComandosServer {
 		
 		Servidor.getPersonajesConectados().remove(escuchaCliente.getPaquetePersonaje().getId());
 		Servidor.getPersonajesConectados().put(escuchaCliente.getPaquetePersonaje().getId(), escuchaCliente.getPaquetePersonaje());
+		
 		escuchaCliente.getPaquetePersonaje().ponerBonus();
 		for(EscuchaCliente conectado : Servidor.getClientesConectados()) {
 			try {
