@@ -47,7 +47,7 @@ public class EscuchaCliente extends Thread {
 		try {
 			ComandosServer comand;
 			Paquete paquete;
-			Paquete paqueteSv = new Paquete(null, 0);
+			//Paquete paqueteSv = new Paquete(null, 0);
 			paqueteUsuario = new PaqueteUsuario();
 
 			String cadenaLeida = (String) entrada.readObject();
@@ -69,6 +69,10 @@ public class EscuchaCliente extends Thread {
 			Servidor.getPersonajesConectados().remove(paquetePersonaje.getId());
 			Servidor.getUbicacionPersonajes().remove(paquetePersonaje.getId());
 			Servidor.getClientesConectados().remove(this);
+			if(Servidor.getPersonajesConectados().isEmpty()) {
+				Servidor.getEnemigos().clear();
+				Servidor.getUbicacionEnemigos().clear();
+			}
 
 			for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
 				paqueteDePersonajes = new PaqueteDePersonajes(Servidor.getPersonajesConectados());

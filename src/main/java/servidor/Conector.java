@@ -59,7 +59,7 @@ public class Conector {
 				return false;
 			}
 		} catch (SQLException ex) {
-			Servidor.log.append("Eror al intentar registrar el usuario " + user.getUsername() + System.lineSeparator());
+			Servidor.log.append("Error al intentar registrar el usuario " + user.getUsername() + System.lineSeparator());
 			System.err.println(ex.getMessage());
 			return false;
 		}
