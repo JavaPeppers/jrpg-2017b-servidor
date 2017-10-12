@@ -9,25 +9,24 @@ public class BatallaNPC extends ComandosServer{
 
 	@Override
 	public void ejecutar() {
-		// Le reenvio al id del personaje batallado que quieren pelear
 		escuchaCliente.setPaqueteBatalla((PaqueteBatalla) gson.fromJson(cadenaLeida, PaqueteBatalla.class));
 
-		Servidor.log.append(escuchaCliente.getPaqueteBatalla().getId() + " quiere batallar con "
+		Servidor.log.append(escuchaCliente.getPaqueteBatalla().getId() + " se topo con  "
 				+ escuchaCliente.getPaqueteBatalla().getIdEnemigo() + System.lineSeparator());
 		try {
 			// seteo estado de batalla
 			Servidor.getPersonajesConectados().get(escuchaCliente.getPaqueteBatalla().getId())
-					.setEstado(Estado.estadoBatallaNPC);
+					.setEstado(Estado.estadoBatallaNPC); //aca que iria estadoBatalla o estadoBatallaNPC?
 			Servidor.getEnemigos().get(escuchaCliente.getPaqueteBatalla().getIdEnemigo())
-					.setEstado(Estado.estadoBatallaNPC);
+					.setEstado(Estado.estadoBatallaNPC);//aca que iria estadoBatalla o estadoBatallaNPC?
 			escuchaCliente.getPaqueteBatalla().setMiTurno(true);
 			escuchaCliente.getSalida().writeObject(gson.toJson(escuchaCliente.getPaqueteBatalla()));
 			
 			for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
 				if (conectado.getIdPersonaje() == escuchaCliente.getPaqueteBatalla().getId()) {
 					int aux = escuchaCliente.getPaqueteBatalla().getId();
-					escuchaCliente.getPaqueteBatalla().setId(aux);
-					escuchaCliente.getPaqueteBatalla().setIdEnemigo(escuchaCliente.getPaqueteBatalla().getIdEnemigo());
+					escuchaCliente.getPaqueteBatalla().setId(escuchaCliente.getPaqueteBatalla().getIdEnemigo());
+					escuchaCliente.getPaqueteBatalla().setIdEnemigo(aux);
 					escuchaCliente.getPaqueteBatalla().setMiTurno(false);
 					conectado.getSalida().writeObject(gson.toJson(escuchaCliente.getPaqueteBatalla()));
 					break;

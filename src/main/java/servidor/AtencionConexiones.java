@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import estados.Estado;
 import mensajeria.Comando;
-import mensajeria.PaqueteDeEnemigos;
 import mensajeria.PaqueteDePersonajes;
 
 public class AtencionConexiones extends Thread {

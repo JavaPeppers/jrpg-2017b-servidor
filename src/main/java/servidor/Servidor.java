@@ -21,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import estados.Estado;
 import mensajeria.PaqueteEnemigo;
 import mensajeria.PaqueteMensaje;
 import mensajeria.PaqueteMovimiento;
@@ -94,6 +93,7 @@ public class Servidor extends Thread {
 		botonDetener.setText("Detener");
 		botonDetener.setBounds(360, ALTO - 70, 100, 30);
 		botonDetener.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				try {
 					server.stop();
@@ -120,6 +120,7 @@ public class Servidor extends Thread {
 
 		ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		ventana.addWindowListener(new WindowAdapter() {
+			@SuppressWarnings("deprecation")
 			public void windowClosing(WindowEvent evt) {
 				if (serverSocket != null) {
 					try {
@@ -167,10 +168,11 @@ public class Servidor extends Thread {
 			for(int i=-1;i>=-10;i--) {
 				PaqueteEnemigo paqueteEnemigo = new PaqueteEnemigo(i);
 				enemigos.put(i, paqueteEnemigo);
-				float x = (float)Math.random() * 500;
-				float y = (float)Math.random() * 500;
+				float x = (float)Math.random() * 500; //MEJORAR ESTO
+				float y = (float)Math.random() * 500; //MEJORAR ESTO
 				
-				PaqueteMovimiento paqueteMovimiento = new PaqueteMovimiento(i, (float)(10 + (x * 0.707) - (y * 0.707 )), (float)(10 + (x * 0.707) + (y * 0.707 )) );
+				PaqueteMovimiento paqueteMovimiento = new PaqueteMovimiento(i, (float)(10 + (x * 0.707) - (y * 0.707 )),
+						(float)(10 + (x * 0.707) + (y * 0.707 )) ); //QUE ES ESTO
 				
 				ubicacionEnemigos.put(i, paqueteMovimiento);
 				
@@ -196,7 +198,6 @@ public class Servidor extends Thread {
 	}
 
 	
-
 	public static boolean mensajeAUsuario(PaqueteMensaje pqm) {
 		boolean result = true;
 		boolean noEncontro = true;
