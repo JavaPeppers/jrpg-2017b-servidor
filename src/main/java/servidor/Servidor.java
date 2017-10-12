@@ -164,19 +164,20 @@ public class Servidor extends Thread {
 			atencionConexiones.start();
 			atencionMovimientos.start();
 			
-			for(int i=-1;i>-2;i--) {
-				PaqueteEnemigo npc = new PaqueteEnemigo();
-				npc.setId(i);
-				npc.setEnergiaTope(60);
-				npc.setEstado(Estado.estadoOffline);
-				npc.setFuerza(10);
-				npc.setSaludTope(60);
-				enemigos.put(i, npc);
-				int posX = 1;
-				int posY = 1;
-				ubicacionEnemigos.put(i, new PaqueteMovimiento(i, posX, posY));
-			}		
-
+			for(int i=-1;i>=-10;i--) {
+				PaqueteEnemigo paqueteEnemigo = new PaqueteEnemigo(i);
+				enemigos.put(i, paqueteEnemigo);
+				float x = (float)Math.random() * 500;
+				float y = (float)Math.random() * 500;
+				
+				PaqueteMovimiento paqueteMovimiento = new PaqueteMovimiento(i, (float)(10 + (x * 0.707) - (y * 0.707 )), (float)(10 + (x * 0.707) + (y * 0.707 )) );
+				
+				ubicacionEnemigos.put(i, paqueteMovimiento);
+				
+				setEnemigos(enemigos);
+				setUbicacionEnemigos(ubicacionEnemigos);
+			}
+			
 			while (true) {
 				Socket cliente = serverSocket.accept();
 				ipRemota = cliente.getInetAddress().getHostAddress();
@@ -187,18 +188,14 @@ public class Servidor extends Thread {
 
 				EscuchaCliente atencion = new EscuchaCliente(ipRemota, cliente, entrada, salida);
 				atencion.start();
-				clientesConectados.add(atencion);
-				if(clientesConectados.size()==1) {
-					//Ejecutar transferencia de paquetes solo cuando se conecta el primero
-					//Como lo hago??
-					//DEBO HACER UN THREAD QUE ESTE EJECUTANDOSE TODO EL TIEMPO PARA RESPAWNEAR A LOS ENEMIGOS?
-				}
-					
+				clientesConectados.add(atencion);					
 			}
 		} catch (Exception e) {
 			log.append("Fallo la conexión." + System.lineSeparator());
 		}
 	}
+
+	
 
 	public static boolean mensajeAUsuario(PaqueteMensaje pqm) {
 		boolean result = true;
@@ -260,6 +257,11 @@ public class Servidor extends Thread {
 
 	public static Map<Integer, PaqueteMovimiento> getUbicacionEnemigos() {
 		return ubicacionEnemigos;
+	}
+	
+	private void setUbicacionEnemigos(Map<Integer, PaqueteMovimiento> ubicacionEnemigos) {
+		Servidor.ubicacionEnemigos = ubicacionEnemigos;
+		
 	}
 	
 	public static void setEnemigos(Map<Integer, PaqueteEnemigo> enemigos) {

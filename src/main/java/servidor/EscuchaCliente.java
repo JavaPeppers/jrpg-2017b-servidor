@@ -12,8 +12,10 @@ import mensajeria.Comando;
 import mensajeria.Paquete;
 import mensajeria.PaqueteAtacar;
 import mensajeria.PaqueteBatalla;
+import mensajeria.PaqueteDeEnemigos;
 import mensajeria.PaqueteDeMovimientos;
 import mensajeria.PaqueteDePersonajes;
+import mensajeria.PaqueteEnemigo;
 import mensajeria.PaqueteFinalizarBatalla;
 import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
@@ -28,6 +30,7 @@ public class EscuchaCliente extends Thread {
 	private final Gson gson = new Gson();
 	
 	private PaquetePersonaje paquetePersonaje;
+	private PaqueteEnemigo paqueteEnemigo;
 	private PaqueteMovimiento paqueteMovimiento;
 	private PaqueteBatalla paqueteBatalla;
 	private PaqueteAtacar paqueteAtacar;
@@ -35,6 +38,7 @@ public class EscuchaCliente extends Thread {
 	private PaqueteUsuario paqueteUsuario;
 	private PaqueteDeMovimientos paqueteDeMovimiento;
 	private PaqueteDePersonajes paqueteDePersonajes;
+	private PaqueteDeEnemigos paqueteDeEnemigos;
 
 	public EscuchaCliente(String ip, Socket socket, ObjectInputStream entrada, ObjectOutputStream salida) throws IOException {
 		this.socket = socket;
@@ -47,7 +51,7 @@ public class EscuchaCliente extends Thread {
 		try {
 			ComandosServer comand;
 			Paquete paquete;
-			//Paquete paqueteSv = new Paquete(null, 0);
+			Paquete paqueteSv = new Paquete(null, 0);
 			paqueteUsuario = new PaqueteUsuario();
 
 			String cadenaLeida = (String) entrada.readObject();
@@ -69,10 +73,10 @@ public class EscuchaCliente extends Thread {
 			Servidor.getPersonajesConectados().remove(paquetePersonaje.getId());
 			Servidor.getUbicacionPersonajes().remove(paquetePersonaje.getId());
 			Servidor.getClientesConectados().remove(this);
-			if(Servidor.getPersonajesConectados().isEmpty()) {
-				Servidor.getEnemigos().clear();
-				Servidor.getUbicacionEnemigos().clear();
-			}
+//			if(Servidor.getPersonajesConectados().isEmpty()) {
+//				Servidor.getEnemigos().clear();
+//				Servidor.getUbicacionEnemigos().clear();
+//			}
 
 			for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
 				paqueteDePersonajes = new PaqueteDePersonajes(Servidor.getPersonajesConectados());
@@ -170,5 +174,22 @@ public class EscuchaCliente extends Thread {
 	public void setPaqueteUsuario(PaqueteUsuario paqueteUsuario) {
 		this.paqueteUsuario = paqueteUsuario;
 	}
+	
+	public PaqueteEnemigo getPaqueteEnemigo() {
+		return paqueteEnemigo;
+	}
+
+	public void setPaqueteEnemigo(PaqueteEnemigo paqueteEnemigo) {
+		this.paqueteEnemigo = paqueteEnemigo;
+	}
+
+	public PaqueteDeEnemigos getPaqueteDeEnemigos() {
+		return paqueteDeEnemigos;
+	}
+
+	public void setPaqueteDeEnemigos(PaqueteDeEnemigos paqueteDeEnemigos) {
+		this.paqueteDeEnemigos = paqueteDeEnemigos;
+	}
+	
 }
 
