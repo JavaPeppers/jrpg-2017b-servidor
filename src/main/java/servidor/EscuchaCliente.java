@@ -12,10 +12,8 @@ import mensajeria.Comando;
 import mensajeria.Paquete;
 import mensajeria.PaqueteAtacar;
 import mensajeria.PaqueteBatalla;
-import mensajeria.PaqueteDeEnemigos;
 import mensajeria.PaqueteDeMovimientos;
 import mensajeria.PaqueteDePersonajes;
-import mensajeria.PaqueteEnemigo;
 import mensajeria.PaqueteFinalizarBatalla;
 import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
@@ -37,26 +35,20 @@ public class EscuchaCliente extends Thread {
 	private PaqueteUsuario paqueteUsuario;
 	private PaqueteDeMovimientos paqueteDeMovimiento;
 	private PaqueteDePersonajes paqueteDePersonajes;
-	private PaqueteEnemigo paqueteEnemigo;
-	private PaqueteDeEnemigos paqueteDeEnemigos;
-	private final static int CANTIDADENEMIGOS = 10;
-
 
 	public EscuchaCliente(String ip, Socket socket, ObjectInputStream entrada, ObjectOutputStream salida) throws IOException {
 		this.socket = socket;
 		this.entrada = entrada;
 		this.salida = salida;
 		paquetePersonaje = new PaquetePersonaje();
-		paqueteEnemigo = new PaqueteEnemigo();
 	}
 
 	public void run() {
 		try {
 			ComandosServer comand;
 			Paquete paquete;
-			Paquete paqueteSv = new Paquete(null, 0);
+			//Paquete paqueteSv = new Paquete(null, 0);
 			paqueteUsuario = new PaqueteUsuario();
-			inicializarEnemigos();
 
 			String cadenaLeida = (String) entrada.readObject();
 		
@@ -79,6 +71,7 @@ public class EscuchaCliente extends Thread {
 			Servidor.getClientesConectados().remove(this);
 			if(Servidor.getPersonajesConectados().isEmpty()) {
 				Servidor.getEnemigos().clear();
+				Servidor.getUbicacionEnemigos().clear();
 			}
 
 			for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
@@ -94,25 +87,6 @@ public class EscuchaCliente extends Thread {
 		} 
 	}
 	
-	private void inicializarEnemigos() {
-		int posIniX = 2;
-		int posIniY = 2;
-
-		int decrementoX = 0;
-		int incrementoY = 0;
-		for (int i = 0; i <	10; i++) {
-			
-			if (i == 0) {
-				Servidor.getEnemigos().put(i, new PaqueteEnemigo(i, "Enemigo", posIniX, posIniY));
-			} else if (i < 7) {
-				Servidor.getEnemigos().put(i, new PaqueteEnemigo(i, "Enemigo" + i, posIniX - decrementoX, posIniY + incrementoY));
-			} else {
-
-				Servidor.getEnemigos().put(i, new PaqueteEnemigo(i, "Enemigo" + i, posIniX - decrementoX, posIniY - incrementoY));
-			}
-		}
-	}
-
 	public Socket getSocket() {
 		return socket;
 	}
@@ -131,6 +105,14 @@ public class EscuchaCliente extends Thread {
 	
 	public int getIdPersonaje() {
 		return idPersonaje;
+	}
+
+	public PaqueteMovimiento getPaqueteMovimiento() {
+		return paqueteMovimiento;
+	}
+
+	public void setPaqueteMovimiento(PaqueteMovimiento paqueteMovimiento) {
+		this.paqueteMovimiento = paqueteMovimiento;
 	}
 
 	public PaqueteBatalla getPaqueteBatalla() {
@@ -188,33 +170,5 @@ public class EscuchaCliente extends Thread {
 	public void setPaqueteUsuario(PaqueteUsuario paqueteUsuario) {
 		this.paqueteUsuario = paqueteUsuario;
 	}
-	
-	public PaqueteEnemigo getPaqueteEnemigo() {
-		return paqueteEnemigo;
-	}
-
-	public void setPaqueteEnemigo(PaqueteEnemigo paqueteEnemigo) {
-		this.paqueteEnemigo = paqueteEnemigo;
-	}
-	
-	public void enviarPaqueteEnemigo() {
-		paqueteDeEnemigos = new PaqueteDeEnemigos(Servidor.getEnemigos());
-		paqueteDeEnemigos.setComando(Comando.SETENEMIGOS);
-		try {
-			this.salida.writeObject(gson.toJson(paqueteDeEnemigos, PaqueteDeEnemigos.class));
-		} catch (IOException e) {
-			Servidor.log.append("Fallo al enviar paquete enemigo\n");
-		}
-	}
-
-	public PaqueteMovimiento getPaqueteMovimiento() {
-		return paqueteMovimiento;
-	}
-
-	public void setPaqueteMovimiento(PaqueteMovimiento paqueteMovimiento) {
-		this.paqueteMovimiento = paqueteMovimiento;
-	}
-
-
 }
 

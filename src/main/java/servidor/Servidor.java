@@ -34,6 +34,7 @@ public class Servidor extends Thread {
 	private static Map<Integer, PaqueteMovimiento> ubicacionPersonajes = new HashMap<>();
 	private static Map<Integer, PaquetePersonaje> personajesConectados = new HashMap<>();
 	private static Map<Integer, PaqueteEnemigo> enemigos = new HashMap<>();
+	private static Map<Integer, PaqueteMovimiento> ubicacionEnemigos = new HashMap<>();
 
 	private static Thread server;
 	
@@ -163,18 +164,18 @@ public class Servidor extends Thread {
 			atencionConexiones.start();
 			atencionMovimientos.start();
 			
-//			for(int i=-1;i>-2;i--) {
-//				PaqueteEnemigo npc = new PaqueteEnemigo();
-//				npc.setId(i);
-//				npc.setEnergiaTope(60);
-//				npc.setEstado(Estado.estadoOffline);
-//				npc.setFuerza(10);
-//				npc.setSaludTope(60);
-//				enemigos.put(i, npc);
-//				int posX = 1;
-//				int posY = 1;
-//				ubicacionEnemigos.put(i, new PaqueteMovimiento(i, posX, posY));
-//			}		
+			for(int i=-1;i>-2;i--) {
+				PaqueteEnemigo npc = new PaqueteEnemigo();
+				npc.setId(i);
+				npc.setEnergiaTope(60);
+				npc.setEstado(Estado.estadoOffline);
+				npc.setFuerza(10);
+				npc.setSaludTope(60);
+				enemigos.put(i, npc);
+				int posX = 1;
+				int posY = 1;
+				ubicacionEnemigos.put(i, new PaqueteMovimiento(i, posX, posY));
+			}		
 
 			while (true) {
 				Socket cliente = serverSocket.accept();
@@ -188,6 +189,9 @@ public class Servidor extends Thread {
 				atencion.start();
 				clientesConectados.add(atencion);
 				if(clientesConectados.size()==1) {
+					//Ejecutar transferencia de paquetes solo cuando se conecta el primero
+					//Como lo hago??
+					//DEBO HACER UN THREAD QUE ESTE EJECUTANDOSE TODO EL TIEMPO PARA RESPAWNEAR A LOS ENEMIGOS?
 				}
 					
 			}
@@ -252,6 +256,10 @@ public class Servidor extends Thread {
 
 	public static Map<Integer, PaqueteEnemigo> getEnemigos() {
 		return enemigos;
+	}
+
+	public static Map<Integer, PaqueteMovimiento> getUbicacionEnemigos() {
+		return ubicacionEnemigos;
 	}
 	
 	public static void setEnemigos(Map<Integer, PaqueteEnemigo> enemigos) {
