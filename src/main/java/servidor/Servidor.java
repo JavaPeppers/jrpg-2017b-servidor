@@ -165,19 +165,28 @@ public class Servidor extends Thread {
 			atencionConexiones.start();
 			atencionMovimientos.start();
 			
+			//Ubico a los enemigos en el hashMap de ubicaciones
 			for(int i=-1;i>=-10;i--) {
 				PaqueteEnemigo paqueteEnemigo = new PaqueteEnemigo(i);
 				enemigos.put(i, paqueteEnemigo);
-				float x = (float)Math.random() * 500; //MEJORAR ESTO
-				float y = (float)Math.random() * 500; //MEJORAR ESTO
 				
-				PaqueteMovimiento paqueteMovimiento = new PaqueteMovimiento(i, (float)(10 + (x * 0.707) - (y * 0.707 )),
-						(float)(10 + (x * 0.707) + (y * 0.707 )) ); //QUE ES ESTO
+				
+				float x = (float)Math.random()*(250-1500)+1500;
+				float y = (float)Math.random()*(250-1000)+1000;
+				
+				PaqueteMovimiento paqueteMovimiento = new PaqueteMovimiento(i,x,y); //QUE ES ESTO
 				
 				ubicacionEnemigos.put(i, paqueteMovimiento);
 				
 				setEnemigos(enemigos);
 				setUbicacionEnemigos(ubicacionEnemigos);
+			}
+			
+			//Cargo más ubicaciones para el respawn de enemigos
+			for(int i=-11;i>=-15;i--) {
+				float x = (float)Math.random()*(0-300)+300;
+				float y = (float)Math.random()*(0-300)+300;
+				ubicacionEnemigos.put(i, new PaqueteMovimiento(0,x,y));
 			}
 			
 			while (true) {

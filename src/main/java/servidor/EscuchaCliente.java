@@ -73,15 +73,13 @@ public class EscuchaCliente extends Thread {
 			Servidor.getPersonajesConectados().remove(paquetePersonaje.getId());
 			Servidor.getUbicacionPersonajes().remove(paquetePersonaje.getId());
 			Servidor.getClientesConectados().remove(this);
-//			if(Servidor.getPersonajesConectados().isEmpty()) {
-//				Servidor.getEnemigos().clear();
-//				Servidor.getUbicacionEnemigos().clear();
-//			}
-
+			
 			for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
 				paqueteDePersonajes = new PaqueteDePersonajes(Servidor.getPersonajesConectados());
 				paqueteDePersonajes.setComando(Comando.CONEXION);
 				conectado.salida.writeObject(gson.toJson(paqueteDePersonajes, PaqueteDePersonajes.class));
+				
+				
 			}
 
 			Servidor.log.append(paquete.getIp() + " se ha desconectado." + System.lineSeparator());

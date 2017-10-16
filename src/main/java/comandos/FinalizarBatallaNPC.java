@@ -21,7 +21,12 @@ public class FinalizarBatallaNPC extends ComandosServer {
 			Servidor.getConector().actualizarInventario(paqueteFinalizarBatalla.getGanadorBatalla());
 			Servidor.getUbicacionEnemigos().remove(paqueteFinalizarBatalla.getIdEnemigo());
 			
-			PaqueteMovimiento newPosicion = new PaqueteMovimiento( paqueteFinalizarBatalla.getIdEnemigo() , 100 + ((float) Math.random() * 500), 10 +( (float)Math.random() * 500));
+			System.out.println("Llegue hasta aca?");
+			float aux = -1*(float)Math.random()*(11-15)+15;
+			
+			float x = Servidor.getUbicacionEnemigos().get(aux).getPosX();
+			float y = Servidor.getUbicacionEnemigos().get(aux).getPosY();
+			PaqueteMovimiento newPosicion = new PaqueteMovimiento( paqueteFinalizarBatalla.getIdEnemigo() ,x,y);
 			
 			Servidor.getUbicacionEnemigos().put( paqueteFinalizarBatalla.getIdEnemigo(), newPosicion);
 		}
