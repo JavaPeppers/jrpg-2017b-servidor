@@ -2,9 +2,6 @@ package testsServidor;
 
 import java.io.IOException;
 import java.util.Random;
-
-import javax.swing.plaf.SliderUI;
-
 import org.junit.Assert;
 import org.junit.Test;
 

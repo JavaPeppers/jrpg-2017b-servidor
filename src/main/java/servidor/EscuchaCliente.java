@@ -12,11 +12,13 @@ import mensajeria.Comando;
 import mensajeria.Paquete;
 import mensajeria.PaqueteAtacar;
 import mensajeria.PaqueteBatalla;
+import mensajeria.PaqueteBatallaNPC;
 import mensajeria.PaqueteDeEnemigos;
 import mensajeria.PaqueteDeMovimientos;
 import mensajeria.PaqueteDePersonajes;
 import mensajeria.PaqueteEnemigo;
 import mensajeria.PaqueteFinalizarBatalla;
+import mensajeria.PaqueteFinalizarBatallaNPC;
 import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
 import mensajeria.PaqueteUsuario;
@@ -33,8 +35,10 @@ public class EscuchaCliente extends Thread {
 	private PaqueteEnemigo paqueteEnemigo;
 	private PaqueteMovimiento paqueteMovimiento;
 	private PaqueteBatalla paqueteBatalla;
+	private PaqueteBatallaNPC paqueteBatallaNPC;
 	private PaqueteAtacar paqueteAtacar;
 	private PaqueteFinalizarBatalla paqueteFinalizarBatalla;
+	private PaqueteFinalizarBatallaNPC paqueteFinalizarNPC;
 	private PaqueteUsuario paqueteUsuario;
 	private PaqueteDeMovimientos paqueteDeMovimiento;
 	private PaqueteDePersonajes paqueteDePersonajes;
@@ -78,7 +82,6 @@ public class EscuchaCliente extends Thread {
 				paqueteDePersonajes = new PaqueteDePersonajes(Servidor.getPersonajesConectados());
 				paqueteDePersonajes.setComando(Comando.CONEXION);
 				conectado.salida.writeObject(gson.toJson(paqueteDePersonajes, PaqueteDePersonajes.class));
-				
 				
 			}
 
@@ -187,6 +190,22 @@ public class EscuchaCliente extends Thread {
 
 	public void setPaqueteDeEnemigos(PaqueteDeEnemigos paqueteDeEnemigos) {
 		this.paqueteDeEnemigos = paqueteDeEnemigos;
+	}
+
+	public PaqueteFinalizarBatallaNPC getPaqueteFinalizarNPC() {
+		return paqueteFinalizarNPC;
+	}
+
+	public void setPaqueteFinalizarNPC(PaqueteFinalizarBatallaNPC paqueteFinalizarNPC) {
+		this.paqueteFinalizarNPC = paqueteFinalizarNPC;
+	}
+
+	public PaqueteBatallaNPC getPaqueteBatallaNPC() {
+		return paqueteBatallaNPC;
+	}
+
+	public void setPaqueteBatallaNPC(PaqueteBatallaNPC paqueteBatallaNPC) {
+		this.paqueteBatallaNPC = paqueteBatallaNPC;
 	}
 	
 }

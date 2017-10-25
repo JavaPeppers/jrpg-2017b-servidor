@@ -33,7 +33,6 @@ public class Servidor extends Thread {
 	private static Map<Integer, PaqueteMovimiento> ubicacionPersonajes = new HashMap<>();
 	private static Map<Integer, PaquetePersonaje> personajesConectados = new HashMap<>();
 	private static Map<Integer, PaqueteEnemigo> enemigos = new HashMap<>();
-	private static Map<Integer, PaqueteMovimiento> ubicacionEnemigos = new HashMap<>();
 
 	private static Thread server;
 	
@@ -167,26 +166,13 @@ public class Servidor extends Thread {
 			
 			//Ubico a los enemigos en el hashMap de ubicaciones
 			for(int i=-1;i>=-10;i--) {
-				PaqueteEnemigo paqueteEnemigo = new PaqueteEnemigo(i);
-				enemigos.put(i, paqueteEnemigo);
-				
 				
 				float x = (float)Math.random()*(250-1500)+1500;
 				float y = (float)Math.random()*(250-1000)+1000;
-				
-				PaqueteMovimiento paqueteMovimiento = new PaqueteMovimiento(i,x,y); //QUE ES ESTO
-				
-				ubicacionEnemigos.put(i, paqueteMovimiento);
+				PaqueteEnemigo paqueteEnemigo = new PaqueteEnemigo(i,x,y);
+				enemigos.put(i, paqueteEnemigo);
 				
 				setEnemigos(enemigos);
-				setUbicacionEnemigos(ubicacionEnemigos);
-			}
-			
-			//Cargo más ubicaciones para el respawn de enemigos
-			for(int i=-11;i>=-15;i--) {
-				float x = (float)Math.random()*(0-300)+300;
-				float y = (float)Math.random()*(0-300)+300;
-				ubicacionEnemigos.put(i, new PaqueteMovimiento(0,x,y));
 			}
 			
 			while (true) {
@@ -263,15 +249,6 @@ public class Servidor extends Thread {
 
 	public static Map<Integer, PaqueteEnemigo> getEnemigos() {
 		return enemigos;
-	}
-
-	public static Map<Integer, PaqueteMovimiento> getUbicacionEnemigos() {
-		return ubicacionEnemigos;
-	}
-	
-	private void setUbicacionEnemigos(Map<Integer, PaqueteMovimiento> ubicacionEnemigos) {
-		Servidor.ubicacionEnemigos = ubicacionEnemigos;
-		
 	}
 	
 	public static void setEnemigos(Map<Integer, PaqueteEnemigo> enemigos) {

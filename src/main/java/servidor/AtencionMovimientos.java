@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import estados.Estado;
 import mensajeria.Comando;
 import mensajeria.PaqueteDeMovimientos;
-import mensajeria.PaqueteDeMovimientosEnemigos;
 
 public class AtencionMovimientos extends Thread {
 	
@@ -35,7 +34,7 @@ public class AtencionMovimientos extends Thread {
 							PaqueteDeMovimientos pdp = (PaqueteDeMovimientos) new PaqueteDeMovimientos(Servidor.getUbicacionPersonajes()).clone();
 							pdp.setComando(Comando.MOVIMIENTO);
 							synchronized (conectado) {
-								conectado.getSalida().writeObject(gson.toJson(pdp));	
+								conectado.getSalida().writeObject(gson.toJson(pdp));
 							}
 						}
 					}

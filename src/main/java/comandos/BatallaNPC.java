@@ -1,45 +1,33 @@
 package comandos;
 
 import estados.Estado;
-import mensajeria.PaqueteBatalla;
-import servidor.EscuchaCliente;
+import mensajeria.PaqueteBatallaNPC;
 import servidor.Servidor;
 
 public class BatallaNPC extends ComandosServer{
 
 	@Override
 	public void ejecutar() {
-		escuchaCliente.setPaqueteBatalla((PaqueteBatalla) gson.fromJson(cadenaLeida, PaqueteBatalla.class));
+		System.out.println("Llegue aca?");
+		escuchaCliente.setPaqueteBatallaNPC((PaqueteBatallaNPC) gson.fromJson(cadenaLeida, PaqueteBatallaNPC.class));
 
-		Servidor.log.append(escuchaCliente.getPaqueteBatalla().getId() + " se topo con  "
-				+ escuchaCliente.getPaqueteBatalla().getIdEnemigo() + System.lineSeparator());
 		try {
 			// seteo estado de batalla
-			Servidor.getPersonajesConectados().get(escuchaCliente.getPaqueteBatalla().getId())
-					.setEstado(Estado.estadoBatallaNPC); //aca que iria estadoBatalla o estadoBatallaNPC?
-			Servidor.getEnemigos().get(escuchaCliente.getPaqueteBatalla().getIdEnemigo())
-					.setEstado(Estado.estadoBatallaNPC);//aca que iria estadoBatalla o estadoBatallaNPC?
-			escuchaCliente.getPaqueteBatalla().setMiTurno(true);
-			escuchaCliente.getSalida().writeObject(gson.toJson(escuchaCliente.getPaqueteBatalla()));
-			
-			for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
-				if (conectado.getIdPersonaje() == escuchaCliente.getPaqueteBatalla().getId()) {
-					int aux = escuchaCliente.getPaqueteBatalla().getId();
-					escuchaCliente.getPaqueteBatalla().setId(escuchaCliente.getPaqueteBatalla().getIdEnemigo());
-					escuchaCliente.getPaqueteBatalla().setIdEnemigo(aux);
-					escuchaCliente.getPaqueteBatalla().setMiTurno(false);
-					conectado.getSalida().writeObject(gson.toJson(escuchaCliente.getPaqueteBatalla()));
-					break;
-				}
-			}
+			Servidor.getPersonajesConectados().get(escuchaCliente.getPaqueteBatallaNPC().getId())
+					.setEstado(Estado.estadoBatallaNPC); 
+			Servidor.getEnemigos().get(escuchaCliente.getPaqueteBatallaNPC().getIdEnemigo())
+					.setEstado(Estado.estadoBatallaNPC);
+			escuchaCliente.getPaqueteBatallaNPC().setMiTurno(true);
+			System.out.println("Mando paquete batalla NPC a cliente");
+			escuchaCliente.getSalida().writeObject(gson.toJson(escuchaCliente.getPaqueteBatallaNPC()));
+
 		} catch (Exception e) {
-			Servidor.log.append("Falló al intentar enviar Batalla \n");
+			Servidor.log.append("Falló al intentar enviar Batalla NPC \n");
 		}
 		
 		synchronized (Servidor.atencionConexiones) {
 			Servidor.atencionConexiones.notify();
 		}
-
 	}
 
 }

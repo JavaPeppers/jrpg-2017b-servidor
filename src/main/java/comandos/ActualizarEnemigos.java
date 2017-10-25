@@ -1,20 +1,14 @@
-package comandos;
-
+//package comandos;
+//
 //import java.io.IOException;
-
 //import mensajeria.PaqueteEnemigo;
 //import servidor.EscuchaCliente;
 //import servidor.Servidor;
-
-public class ActualizarEnemigos extends ComandosServer{
-
-	/**
-	 * Me va a servir para sacar a los enemigos cuando esten batallando
-	 * 
-	 * Por ahora no puedo aplicarle un uso.
-	 */
-	@Override
-	public void ejecutar() {
+//
+//public class ActualizarEnemigos extends ComandosServer{
+//
+//	@Override
+//	public void ejecutar() {
 //		escuchaCliente.setPaqueteEnemigo((PaqueteEnemigo) gson.fromJson(cadenaLeida, PaqueteEnemigo.class));
 //				
 ////		Servidor.getEnemigos().remove(escuchaCliente.getPaqueteEnemigo().getId());
@@ -27,8 +21,8 @@ public class ActualizarEnemigos extends ComandosServer{
 //			} catch (IOException e) {
 //				Servidor.log.append("Falló al intentar enviar paqueteEnemigo a:" + conectado.getPaquetePersonaje().getId() + "\n");
 //			}
-		}
-		
+//		}
+//		
 //	}
-
-}
+//
+//}
