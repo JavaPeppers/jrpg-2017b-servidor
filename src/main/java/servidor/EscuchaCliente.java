@@ -38,7 +38,7 @@ public class EscuchaCliente extends Thread {
 	private PaqueteBatallaNPC paqueteBatallaNPC;
 	private PaqueteAtacar paqueteAtacar;
 	private PaqueteFinalizarBatalla paqueteFinalizarBatalla;
-	private PaqueteFinalizarBatallaNPC paqueteFinalizarNPC;
+	private PaqueteFinalizarBatallaNPC paqueteFinalizarBatallaNPC;
 	private PaqueteUsuario paqueteUsuario;
 	private PaqueteDeMovimientos paqueteDeMovimiento;
 	private PaqueteDePersonajes paqueteDePersonajes;
@@ -192,12 +192,12 @@ public class EscuchaCliente extends Thread {
 		this.paqueteDeEnemigos = paqueteDeEnemigos;
 	}
 
-	public PaqueteFinalizarBatallaNPC getPaqueteFinalizarNPC() {
-		return paqueteFinalizarNPC;
+	public PaqueteFinalizarBatallaNPC getPaqueteFinalizarBatallaNPC() {
+		return paqueteFinalizarBatallaNPC;
 	}
 
-	public void setPaqueteFinalizarNPC(PaqueteFinalizarBatallaNPC paqueteFinalizarNPC) {
-		this.paqueteFinalizarNPC = paqueteFinalizarNPC;
+	public void setPaqueteFinalizarBatallaNPC(PaqueteFinalizarBatallaNPC paqueteFinalizarNPC) {
+		this.paqueteFinalizarBatallaNPC = paqueteFinalizarNPC;
 	}
 
 	public PaqueteBatallaNPC getPaqueteBatallaNPC() {

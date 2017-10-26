@@ -35,14 +35,14 @@ public class AtencionConexiones extends Thread {
 							synchronized (conectado) {
 								conectado.getSalida().writeObject(gson.toJson(pdp));
 							}
-//							/**Probando
-//							 * 
-//							 */
-//							PaqueteDeEnemigos pde = (PaqueteDeEnemigos) new PaqueteDeEnemigos(Servidor.getEnemigos()).clone();
-//							pde.setComando(Comando.SETENEMIGOS);
-//							synchronized(conectado) {
-//								conectado.getSalida().writeObject(gson.toJson(pde));
-//							}
+							/**Probando
+							 * 
+							 */
+							PaqueteDeEnemigos pde = (PaqueteDeEnemigos) new PaqueteDeEnemigos(Servidor.getEnemigos()).clone();
+							pde.setComando(Comando.SETENEMIGOS);
+							synchronized(conectado) {
+								conectado.getSalida().writeObject(gson.toJson(pde));
+							}
 						}	
 					}
 				}
