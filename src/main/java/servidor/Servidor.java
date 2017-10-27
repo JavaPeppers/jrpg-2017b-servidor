@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import mensajeria.PaqueteEnemigo;
 import mensajeria.PaqueteMensaje;
 import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
@@ -31,6 +32,7 @@ public class Servidor extends Thread {
 	
 	private static Map<Integer, PaqueteMovimiento> ubicacionPersonajes = new HashMap<>();
 	private static Map<Integer, PaquetePersonaje> personajesConectados = new HashMap<>();
+	private static Map<Integer, PaqueteEnemigo> enemigos = new HashMap<>();
 
 	private static Thread server;
 	
@@ -90,6 +92,7 @@ public class Servidor extends Thread {
 		botonDetener.setText("Detener");
 		botonDetener.setBounds(360, ALTO - 70, 100, 30);
 		botonDetener.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				try {
 					server.stop();
@@ -116,6 +119,7 @@ public class Servidor extends Thread {
 
 		ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		ventana.addWindowListener(new WindowAdapter() {
+			@SuppressWarnings("deprecation")
 			public void windowClosing(WindowEvent evt) {
 				if (serverSocket != null) {
 					try {
@@ -159,7 +163,18 @@ public class Servidor extends Thread {
 			
 			atencionConexiones.start();
 			atencionMovimientos.start();
-
+			
+			//Ubico a los enemigos en el hashMap de enemigos
+			for(int i=-1;i>=-10;i--) {
+				
+				float x = (float)Math.random()*(250-1500)+1500;
+				float y = (float)Math.random()*(x/2-1600)+1600;
+				PaqueteEnemigo paqueteEnemigo = new PaqueteEnemigo(i,x,y);
+				enemigos.put(i, paqueteEnemigo);
+				
+				setEnemigos(enemigos);
+			}
+			
 			while (true) {
 				Socket cliente = serverSocket.accept();
 				ipRemota = cliente.getInetAddress().getHostAddress();
@@ -170,13 +185,14 @@ public class Servidor extends Thread {
 
 				EscuchaCliente atencion = new EscuchaCliente(ipRemota, cliente, entrada, salida);
 				atencion.start();
-				clientesConectados.add(atencion);
+				clientesConectados.add(atencion);					
 			}
 		} catch (Exception e) {
 			log.append("Fallo la conexión." + System.lineSeparator());
 		}
 	}
 
+	
 	public static boolean mensajeAUsuario(PaqueteMensaje pqm) {
 		boolean result = true;
 		boolean noEncontro = true;
@@ -230,4 +246,13 @@ public class Servidor extends Thread {
 	public static Conector getConector() {
 		return conexionDB;
 	}
+
+	public static Map<Integer, PaqueteEnemigo> getEnemigos() {
+		return enemigos;
+	}
+	
+	public static void setEnemigos(Map<Integer, PaqueteEnemigo> enemigos) {
+		Servidor.enemigos = enemigos;
+	}
+	
 }

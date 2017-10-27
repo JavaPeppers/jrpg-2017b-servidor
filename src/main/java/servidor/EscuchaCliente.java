@@ -12,9 +12,13 @@ import mensajeria.Comando;
 import mensajeria.Paquete;
 import mensajeria.PaqueteAtacar;
 import mensajeria.PaqueteBatalla;
+import mensajeria.PaqueteBatallaNPC;
+import mensajeria.PaqueteDeEnemigos;
 import mensajeria.PaqueteDeMovimientos;
 import mensajeria.PaqueteDePersonajes;
+import mensajeria.PaqueteEnemigo;
 import mensajeria.PaqueteFinalizarBatalla;
+import mensajeria.PaqueteFinalizarBatallaNPC;
 import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
 import mensajeria.PaqueteUsuario;
@@ -28,13 +32,17 @@ public class EscuchaCliente extends Thread {
 	private final Gson gson = new Gson();
 	
 	private PaquetePersonaje paquetePersonaje;
+	private PaqueteEnemigo paqueteEnemigo;
 	private PaqueteMovimiento paqueteMovimiento;
 	private PaqueteBatalla paqueteBatalla;
+	private PaqueteBatallaNPC paqueteBatallaNPC;
 	private PaqueteAtacar paqueteAtacar;
 	private PaqueteFinalizarBatalla paqueteFinalizarBatalla;
+	private PaqueteFinalizarBatallaNPC paqueteFinalizarBatallaNPC;
 	private PaqueteUsuario paqueteUsuario;
 	private PaqueteDeMovimientos paqueteDeMovimiento;
 	private PaqueteDePersonajes paqueteDePersonajes;
+	private PaqueteDeEnemigos paqueteDeEnemigos;
 
 	public EscuchaCliente(String ip, Socket socket, ObjectInputStream entrada, ObjectOutputStream salida) throws IOException {
 		this.socket = socket;
@@ -47,7 +55,7 @@ public class EscuchaCliente extends Thread {
 		try {
 			ComandosServer comand;
 			Paquete paquete;
-			Paquete paqueteSv = new Paquete(null, 0);
+			//Paquete paqueteSv = new Paquete(null, 0);
 			paqueteUsuario = new PaqueteUsuario();
 
 			String cadenaLeida = (String) entrada.readObject();
@@ -69,11 +77,12 @@ public class EscuchaCliente extends Thread {
 			Servidor.getPersonajesConectados().remove(paquetePersonaje.getId());
 			Servidor.getUbicacionPersonajes().remove(paquetePersonaje.getId());
 			Servidor.getClientesConectados().remove(this);
-
+			
 			for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
 				paqueteDePersonajes = new PaqueteDePersonajes(Servidor.getPersonajesConectados());
 				paqueteDePersonajes.setComando(Comando.CONEXION);
 				conectado.salida.writeObject(gson.toJson(paqueteDePersonajes, PaqueteDePersonajes.class));
+				
 			}
 
 			Servidor.log.append(paquete.getIp() + " se ha desconectado." + System.lineSeparator());
@@ -166,5 +175,38 @@ public class EscuchaCliente extends Thread {
 	public void setPaqueteUsuario(PaqueteUsuario paqueteUsuario) {
 		this.paqueteUsuario = paqueteUsuario;
 	}
+	
+	public PaqueteEnemigo getPaqueteEnemigo() {
+		return paqueteEnemigo;
+	}
+
+	public void setPaqueteEnemigo(PaqueteEnemigo paqueteEnemigo) {
+		this.paqueteEnemigo = paqueteEnemigo;
+	}
+
+	public PaqueteDeEnemigos getPaqueteDeEnemigos() {
+		return paqueteDeEnemigos;
+	}
+
+	public void setPaqueteDeEnemigos(PaqueteDeEnemigos paqueteDeEnemigos) {
+		this.paqueteDeEnemigos = paqueteDeEnemigos;
+	}
+
+	public PaqueteFinalizarBatallaNPC getPaqueteFinalizarBatallaNPC() {
+		return paqueteFinalizarBatallaNPC;
+	}
+
+	public void setPaqueteFinalizarBatallaNPC(PaqueteFinalizarBatallaNPC paqueteFinalizarNPC) {
+		this.paqueteFinalizarBatallaNPC = paqueteFinalizarNPC;
+	}
+
+	public PaqueteBatallaNPC getPaqueteBatallaNPC() {
+		return paqueteBatallaNPC;
+	}
+
+	public void setPaqueteBatallaNPC(PaqueteBatallaNPC paqueteBatallaNPC) {
+		this.paqueteBatallaNPC = paqueteBatallaNPC;
+	}
+	
 }
 

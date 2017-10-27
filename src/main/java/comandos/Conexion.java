@@ -10,9 +10,9 @@ public class Conexion extends ComandosServer {
 	public void ejecutar() {
 		escuchaCliente.setPaquetePersonaje((PaquetePersonaje) (gson.fromJson(cadenaLeida, PaquetePersonaje.class)).clone());
 
+		//Actualizo los personajes en la conexion.
 		Servidor.getPersonajesConectados().put(escuchaCliente.getPaquetePersonaje().getId(), (PaquetePersonaje) escuchaCliente.getPaquetePersonaje().clone());
 		Servidor.getUbicacionPersonajes().put(escuchaCliente.getPaquetePersonaje().getId(), (PaqueteMovimiento) new PaqueteMovimiento(escuchaCliente.getPaquetePersonaje().getId()).clone());
-		
 		synchronized(Servidor.atencionConexiones){
 			Servidor.atencionConexiones.notify();
 		}
