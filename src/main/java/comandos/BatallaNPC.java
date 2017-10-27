@@ -11,6 +11,7 @@ public class BatallaNPC extends ComandosServer{
 		
 		escuchaCliente.setPaqueteBatallaNPC((PaqueteBatallaNPC) gson.fromJson(cadenaLeida, PaqueteBatallaNPC.class));
 
+		Servidor.log.append(escuchaCliente.getPaqueteBatallaNPC().getId() + " va a pelear con Enemigo de Id " + escuchaCliente.getPaqueteBatallaNPC().getIdEnemigo() + "\n");
 		try {
 			// seteo estado de batalla
 			Servidor.getPersonajesConectados().get(escuchaCliente.getPaqueteBatallaNPC().getId())

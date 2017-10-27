@@ -15,8 +15,6 @@ public class SetEnemigos extends ComandosServer{
 		try {
 			PaqueteDeEnemigos packEnemigos = new PaqueteDeEnemigos(Servidor.getEnemigos());
 			packEnemigos.setComando(Comando.SETENEMIGOS);
-			
-			System.out.println("Envio los enemigos al cliente");
 			escuchaCliente.getSalida().writeObject(gson.toJson(packEnemigos));
 		} catch (IOException e) {
 			Servidor.log.append("Error al setear a los enemigos en el mapa.\n");

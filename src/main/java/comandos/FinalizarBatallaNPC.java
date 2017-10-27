@@ -15,7 +15,6 @@ public class FinalizarBatallaNPC extends ComandosServer {
 		PaqueteFinalizarBatallaNPC paqueteFinalizarBatalla = (PaqueteFinalizarBatallaNPC)gson.fromJson(cadenaLeida, PaqueteFinalizarBatallaNPC.class); 
 		escuchaCliente.setPaqueteFinalizarBatallaNPC(paqueteFinalizarBatalla);
 		Servidor.getPersonajesConectados().get(escuchaCliente.getPaqueteFinalizarBatallaNPC().getId()).setEstado(Estado.estadoJuego);
-		System.out.println("Respawneo al enemigo");
 		//VER SI TIENE PERSONAJES CERCA
 		float x = 0;
 		float y = 0;
