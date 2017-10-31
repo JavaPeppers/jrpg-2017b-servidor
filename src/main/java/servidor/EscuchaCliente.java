@@ -23,190 +23,372 @@ import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
 import mensajeria.PaqueteUsuario;
 
+/**
+ * Clase encargada de la comunicación con el cliente.
+ */
 public class EscuchaCliente extends Thread {
 
-	private final Socket socket;
-	private final ObjectInputStream entrada;
-	private final ObjectOutputStream salida;
-	private int idPersonaje;
-	private final Gson gson = new Gson();
-	
-	private PaquetePersonaje paquetePersonaje;
-	private PaqueteEnemigo paqueteEnemigo;
-	private PaqueteMovimiento paqueteMovimiento;
-	private PaqueteBatalla paqueteBatalla;
-	private PaqueteBatallaNPC paqueteBatallaNPC;
-	private PaqueteAtacar paqueteAtacar;
-	private PaqueteFinalizarBatalla paqueteFinalizarBatalla;
-	private PaqueteFinalizarBatallaNPC paqueteFinalizarBatallaNPC;
-	private PaqueteUsuario paqueteUsuario;
-	private PaqueteDeMovimientos paqueteDeMovimiento;
-	private PaqueteDePersonajes paqueteDePersonajes;
-	private PaqueteDeEnemigos paqueteDeEnemigos;
+    /** Socket que se utilizará para la comunicación. **/
+    private final Socket socket;
 
-	public EscuchaCliente(String ip, Socket socket, ObjectInputStream entrada, ObjectOutputStream salida) throws IOException {
-		this.socket = socket;
-		this.entrada = entrada;
-		this.salida = salida;
-		paquetePersonaje = new PaquetePersonaje();
-	}
+    /** Variable para obtener lo enviado por el cliente. **/
+    private final ObjectInputStream entrada;
 
-	public void run() {
-		try {
-			ComandosServer comand;
-			Paquete paquete;
-			//Paquete paqueteSv = new Paquete(null, 0);
-			paqueteUsuario = new PaqueteUsuario();
+    /** Variable donde se guardará lo que se le va a enviar al cliente. **/
+    private final ObjectOutputStream salida;
 
-			String cadenaLeida = (String) entrada.readObject();
-		
-			while (!((paquete = gson.fromJson(cadenaLeida, Paquete.class)).getComando() == Comando.DESCONECTAR)){
-								
+    /** Variable que almacena el id del personaje. **/
+    private int idPersonaje;
 
-				comand = (ComandosServer) paquete.getObjeto(Comando.NOMBREPAQUETE);
-				comand.setCadena(cadenaLeida);
-				comand.setEscuchaCliente(this);
-				comand.ejecutar();
-				cadenaLeida = (String) entrada.readObject();
-			}
+    /** Variable que contiene el gson para la comunicación. **/
+    private final Gson gson = new Gson();
 
-			entrada.close();
-			salida.close();
-			socket.close();
+    /** Variable que almacenará los datos del personaje. **/
+    private PaquetePersonaje paquetePersonaje;
 
-			Servidor.getPersonajesConectados().remove(paquetePersonaje.getId());
-			Servidor.getUbicacionPersonajes().remove(paquetePersonaje.getId());
-			Servidor.getClientesConectados().remove(this);
-			
-			for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
-				paqueteDePersonajes = new PaqueteDePersonajes(Servidor.getPersonajesConectados());
-				paqueteDePersonajes.setComando(Comando.CONEXION);
-				conectado.salida.writeObject(gson.toJson(paqueteDePersonajes, PaqueteDePersonajes.class));
-				
-			}
+    /** Variable que almacenará los datos del enemigo. **/
+    private PaqueteEnemigo paqueteEnemigo;
 
-			Servidor.log.append(paquete.getIp() + " se ha desconectado." + System.lineSeparator());
+    /** Variable que almacenará el movimiento del personaje. **/
+    private PaqueteMovimiento paqueteMovimiento;
 
-		} catch (IOException | ClassNotFoundException e) {
-			Servidor.log.append("Error de conexion: " + e.getMessage() + System.lineSeparator());
-		} 
-	}
-	
-	public Socket getSocket() {
-		return socket;
-	}
-	
-	public ObjectInputStream getEntrada() {
-		return entrada;
-	}
-	
-	public ObjectOutputStream getSalida() {
-		return salida;
-	}
-	
-	public PaquetePersonaje getPaquetePersonaje(){
-		return paquetePersonaje;
-	}
-	
-	public int getIdPersonaje() {
-		return idPersonaje;
-	}
+    /** Variable que almacenará los datos de la batalla entre clientes. **/
+    private PaqueteBatalla paqueteBatalla;
 
-	public PaqueteMovimiento getPaqueteMovimiento() {
-		return paqueteMovimiento;
-	}
+    /** Variable que almacenará los datos de la batalla entre cliente y NPC. **/
+    private PaqueteBatallaNPC paqueteBatallaNPC;
 
-	public void setPaqueteMovimiento(PaqueteMovimiento paqueteMovimiento) {
-		this.paqueteMovimiento = paqueteMovimiento;
-	}
+    /** Variable que contendrá el ataque entre personajes. **/
+    private PaqueteAtacar paqueteAtacar;
 
-	public PaqueteBatalla getPaqueteBatalla() {
-		return paqueteBatalla;
-	}
+    /** Variable que almacenará los datos para finalizar una batalla. **/
+    private PaqueteFinalizarBatalla paqueteFinalizarBatalla;
 
-	public void setPaqueteBatalla(PaqueteBatalla paqueteBatalla) {
-		this.paqueteBatalla = paqueteBatalla;
-	}
+    /** Variable que almacenará los datos para finalizar
+     * una batalla contra un NPC. **/
+    private PaqueteFinalizarBatallaNPC paqueteFinalizarBatallaNPC;
 
-	public PaqueteAtacar getPaqueteAtacar() {
-		return paqueteAtacar;
-	}
+    /** Variable que almacenará los datos del usuario. **/
+    private PaqueteUsuario paqueteUsuario;
 
-	public void setPaqueteAtacar(PaqueteAtacar paqueteAtacar) {
-		this.paqueteAtacar = paqueteAtacar;
-	}
+    /** Variable que almacenará los movimientos del personaje. **/
+    private PaqueteDeMovimientos paqueteDeMovimiento;
 
-	public PaqueteFinalizarBatalla getPaqueteFinalizarBatalla() {
-		return paqueteFinalizarBatalla;
-	}
+    /** Variable que almacenará los personajes. **/
+    private PaqueteDePersonajes paqueteDePersonajes;
 
-	public void setPaqueteFinalizarBatalla(PaqueteFinalizarBatalla paqueteFinalizarBatalla) {
-		this.paqueteFinalizarBatalla = paqueteFinalizarBatalla;
-	}
+    /** Variable que almacenará los enemigos. (NPC) **/
+    private PaqueteDeEnemigos paqueteDeEnemigos;
 
-	public PaqueteDeMovimientos getPaqueteDeMovimiento() {
-		return paqueteDeMovimiento;
-	}
 
-	public void setPaqueteDeMovimiento(PaqueteDeMovimientos paqueteDeMovimiento) {
-		this.paqueteDeMovimiento = paqueteDeMovimiento;
-	}
+    /**
+     * Método que realiza la conexión con el cliente.
+     * @param ip Dirección IP de conexión.
+     * @param socket Socket.
+     * @param entrada Objeto de entrada.
+     * @param salida Objeto de salida.
+     * @throws IOException En el caso de no poder realizar la conexión.
+     */
+    public EscuchaCliente(final String ip, final Socket socket,
+        final ObjectInputStream entrada, final ObjectOutputStream salida)
+            throws IOException {
+        this.socket = socket;
+        this.entrada = entrada;
+        this.salida = salida;
+        paquetePersonaje = new PaquetePersonaje();
+    }
 
-	public PaqueteDePersonajes getPaqueteDePersonajes() {
-		return paqueteDePersonajes;
-	}
+    
+    /**
+     * Método encargado de escuchar los comandos del cliente.
+     */
+    public void run() {
+         try {
+            ComandosServer comand;
+            Paquete paquete;
+            //Paquete paqueteSv = new Paquete(null, 0);
+            paqueteUsuario = new PaqueteUsuario();
 
-	public void setPaqueteDePersonajes(PaqueteDePersonajes paqueteDePersonajes) {
-		this.paqueteDePersonajes = paqueteDePersonajes;
-	}
+            String cadenaLeida = (String) entrada.readObject();
 
-	public void setIdPersonaje(int idPersonaje) {
-		this.idPersonaje = idPersonaje;
-	}
+            while (!((paquete = gson.fromJson(cadenaLeida, Paquete.class))
+                   .getComando() == Comando.DESCONECTAR)) {
 
-	public void setPaquetePersonaje(PaquetePersonaje paquetePersonaje) {
-		this.paquetePersonaje = paquetePersonaje;
-	}
 
-	public PaqueteUsuario getPaqueteUsuario() {
-		return paqueteUsuario;
-	}
+                comand = (ComandosServer)
+                     paquete.getObjeto(Comando.NOMBREPAQUETE);
+                comand.setCadena(cadenaLeida);
+                comand.setEscuchaCliente(this);
+                comand.ejecutar();
+                cadenaLeida = (String) entrada.readObject();
+            }
 
-	public void setPaqueteUsuario(PaqueteUsuario paqueteUsuario) {
-		this.paqueteUsuario = paqueteUsuario;
-	}
-	
-	public PaqueteEnemigo getPaqueteEnemigo() {
-		return paqueteEnemigo;
-	}
+            entrada.close();
+            salida.close();
+            socket.close();
 
-	public void setPaqueteEnemigo(PaqueteEnemigo paqueteEnemigo) {
-		this.paqueteEnemigo = paqueteEnemigo;
-	}
+            Servidor.getPersonajesConectados().remove(paquetePersonaje.getId());
+            Servidor.getUbicacionPersonajes().remove(paquetePersonaje.getId());
+            Servidor.getClientesConectados().remove(this);
 
-	public PaqueteDeEnemigos getPaqueteDeEnemigos() {
-		return paqueteDeEnemigos;
-	}
+            for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
+                paqueteDePersonajes = new PaqueteDePersonajes(
+                    Servidor.getPersonajesConectados());
+                paqueteDePersonajes.setComando(Comando.CONEXION);
+                conectado.salida.writeObject(gson.toJson(
+                    paqueteDePersonajes, PaqueteDePersonajes.class));
 
-	public void setPaqueteDeEnemigos(PaqueteDeEnemigos paqueteDeEnemigos) {
-		this.paqueteDeEnemigos = paqueteDeEnemigos;
-	}
+           }
 
-	public PaqueteFinalizarBatallaNPC getPaqueteFinalizarBatallaNPC() {
-		return paqueteFinalizarBatallaNPC;
-	}
+           Servidor.log.append(paquete.getIp()
+                + " se ha desconectado." + System.lineSeparator());
 
-	public void setPaqueteFinalizarBatallaNPC(PaqueteFinalizarBatallaNPC paqueteFinalizarNPC) {
-		this.paqueteFinalizarBatallaNPC = paqueteFinalizarNPC;
-	}
+         } catch (IOException | ClassNotFoundException e) {
+           Servidor.log.append("Error de conexion: "
+         + e.getMessage() + System.lineSeparator());
+       }
+    }
 
-	public PaqueteBatallaNPC getPaqueteBatallaNPC() {
-		return paqueteBatallaNPC;
-	}
+    /**
+     * Método que obtiene el socket.
+     * @return Socket.
+     */
+    public Socket getSocket() {
+        return socket;
+    }
 
-	public void setPaqueteBatallaNPC(PaqueteBatallaNPC paqueteBatallaNPC) {
-		this.paqueteBatallaNPC = paqueteBatallaNPC;
-	}
-	
+    /**
+     * Método que obtiene la entrada.
+     * @return ObjectInputStream Entrada.
+     */
+    public ObjectInputStream getEntrada() {
+        return entrada;
+    }
+
+    /**
+     * Método que obtiene la salida.
+     * @return ObjectOutputStream Salida.
+     */
+    public ObjectOutputStream getSalida() {
+        return salida;
+    }
+
+    /**
+     * Método que me devuelve el paquetePersonaje.
+     * @return PaquetePersonaje.
+     */
+    public PaquetePersonaje getPaquetePersonaje() {
+       return paquetePersonaje;
+    }
+
+    /**
+     * Método que me devuelve el ID del personaje.
+     * @return int IdPersonaje.
+     */
+     public int getIdPersonaje() {
+         return idPersonaje;
+     }
+
+     /**
+      * Método que me devuelve el paqueteMovimiento.
+      * @return PaqueteMovimiento.
+      */
+     public PaqueteMovimiento getPaqueteMovimiento() {
+         return paqueteMovimiento;
+    }
+
+     /**
+      * Método que setea el paqueteMovimiento.
+      * @param paqueteMovimiento Movimiento.
+      */
+    public void setPaqueteMovimiento(
+          final PaqueteMovimiento paqueteMovimiento) {
+        this.paqueteMovimiento = paqueteMovimiento;
+    }
+
+    /**
+     * Método que me devuelve el paqueteBatalla.
+     * @return PaqueteBatalla.
+     */
+    public PaqueteBatalla getPaqueteBatalla() {
+        return paqueteBatalla;
+    }
+
+    /**
+     * Método que setea el paqueteBatalla.
+     * @param paqueteBatalla PaqueteBatalla.
+     */
+    public void setPaqueteBatalla(final PaqueteBatalla paqueteBatalla) {
+        this.paqueteBatalla = paqueteBatalla;
+    }
+
+    /**
+     * Método que me devuelve el paqueteAtacar.
+     * @return PaqueteAtacar paqueteAtacar.
+     */
+    public PaqueteAtacar getPaqueteAtacar() {
+         return paqueteAtacar;
+    }
+
+    /**
+     * Método que setea el paqueteAtacar.
+     * @param paqueteAtacar PaqueteAtacar.
+     */
+    public void setPaqueteAtacar(final PaqueteAtacar paqueteAtacar) {
+         this.paqueteAtacar = paqueteAtacar;
+    }
+
+    /**
+     * Método que me devuelve el paqueteFinalizarBatalla.
+     * @return PaqueteFinalizarBatalla paqueteFinalizarBatalla.
+     */
+    public PaqueteFinalizarBatalla getPaqueteFinalizarBatalla() {
+         return paqueteFinalizarBatalla;
+    }
+
+    /**
+     * Método que setea el paqueteFinalizarBatalla.
+     * @param paqueteFinalizarBatalla paqueteFinalizarBatalla.
+     */
+    public void setPaqueteFinalizarBatalla(
+           final PaqueteFinalizarBatalla paqueteFinalizarBatalla) {
+         this.paqueteFinalizarBatalla = paqueteFinalizarBatalla;
+    }
+
+    /**
+     * Método que devuelve el paquete de Movimientos.
+     * @return PaqueteDeMovimiento
+     */
+    public PaqueteDeMovimientos getPaqueteDeMovimiento() {
+        return paqueteDeMovimiento;
+    }
+
+    /**
+     * Método que seta el paquete de movimientos.
+     * @param paqueteDeMovimiento
+     */
+    public void setPaqueteDeMovimiento(
+        final PaqueteDeMovimientos paqueteDeMovimiento) {
+    this.paqueteDeMovimiento = paqueteDeMovimiento;
+    }
+
+    /**
+     * Método que me devuelve el paqueteDePersonajes.
+     * @return PaqueteDePersonajes.
+     */
+    public PaqueteDePersonajes getPaqueteDePersonajes() {
+         return paqueteDePersonajes;
+    }
+
+    /**
+     * Méotdo que setea el paquete de personajes.
+     * @param paqueteDePersonajes PaqueteDePersonajes.
+     */
+    public void setPaqueteDePersonajes(
+          final PaqueteDePersonajes paqueteDePersonajes) {
+       this.paqueteDePersonajes = paqueteDePersonajes;
+    }
+
+    /**
+     * Método que setea el id del personaje.
+     * @param idPersonaje int id de personaje.
+     */
+    public void setIdPersonaje(final int idPersonaje) {
+         this.idPersonaje = idPersonaje;
+    }
+
+    /**
+     * Método que setea el paquetePersonaje.
+     * @param paquetePersonaje PaquetePersonaje
+     */
+    public void setPaquetePersonaje(
+           final PaquetePersonaje paquetePersonaje) {
+       this.paquetePersonaje = paquetePersonaje;
+    }
+
+    /**
+     * Método que me devuelve el paqueteUsuario.
+     * @return PaqueteUsuario.
+     */
+    public PaqueteUsuario getPaqueteUsuario() {
+        return paqueteUsuario;
+    }
+
+    
+    /**
+     * Método que setea el paqueteUsuario.
+     * @param paqueteUsuario paq usuario.
+     */
+    public void setPaqueteUsuario(final PaqueteUsuario paqueteUsuario) {
+        this.paqueteUsuario = paqueteUsuario;
+    }
+
+    /**
+     * Método que me devuelve el paqueteEnemigo.
+     * @return PaqueteEnemigo.
+     */
+    public PaqueteEnemigo getPaqueteEnemigo() {
+         return paqueteEnemigo;
+    }
+
+    /**
+     * Método que setea el paqueteEnemigo.
+     * @param paqueteEnemigo paqueteEnemigo.
+     */
+    public void setPaqueteEnemigo(
+       final PaqueteEnemigo paqueteEnemigo) {
+       this.paqueteEnemigo = paqueteEnemigo;
+   }
+
+    /**
+     * Método que me devuelve el paqueteDeEnemigos.
+     * @return PaqueteDeEnemigos.
+     */
+    public PaqueteDeEnemigos getPaqueteDeEnemigos() {
+        return paqueteDeEnemigos;
+    }
+
+    /**
+     * Método que setea el paqueteDeEnemigos.
+     * @param paqueteDeEnemigos paq de enemigos.
+     */
+    public void setPaqueteDeEnemigos(
+         final PaqueteDeEnemigos paqueteDeEnemigos) {
+       this.paqueteDeEnemigos = paqueteDeEnemigos;
+    }
+
+    /**
+     * Método que me devuelve el paqueteFinalizarBatallaNPC.
+     * @return PaqueteFinalizarBatallaNPC.
+     */
+     public PaqueteFinalizarBatallaNPC getPaqueteFinalizarBatallaNPC() {
+         return paqueteFinalizarBatallaNPC;
+     }
+
+     /**
+      * Método que setea el paqueteFinalizarBatallaNPC.
+      * @param paqueteFinalizarNPC PaqueteFinalizarBatallaNPC.
+      */
+    public void setPaqueteFinalizarBatallaNPC(
+        final PaqueteFinalizarBatallaNPC paqueteFinalizarNPC) {
+       this.paqueteFinalizarBatallaNPC = paqueteFinalizarNPC;
+    }
+
+    /**
+     * Método que me devuelve el paqueteBatallaNPC.
+     * @return PaqueteBatallaNPC.
+     */
+    public PaqueteBatallaNPC getPaqueteBatallaNPC() {
+        return paqueteBatallaNPC;
+    }
+
+    /**
+     * Método que setea el paqueteBatallaNPC.
+     * @param paqueteBatallaNPC PaqueteBatallaNPC.
+     */
+    public void setPaqueteBatallaNPC(
+        final PaqueteBatallaNPC paqueteBatallaNPC) {
+      this.paqueteBatallaNPC = paqueteBatallaNPC;
+    }
+
 }
-

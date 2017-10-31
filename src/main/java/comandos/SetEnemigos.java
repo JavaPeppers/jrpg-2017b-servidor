@@ -6,18 +6,26 @@ import mensajeria.Comando;
 import mensajeria.PaqueteDeEnemigos;
 import servidor.Servidor;
 
-public class SetEnemigos extends ComandosServer{
+/**
+ * Clase que se encarga de setear los enemigos (NPC) en el mapa.
+ */
+public class SetEnemigos extends ComandosServer {
 
-	@Override
-	public void ejecutar() {
-		
-		escuchaCliente.setPaqueteDeEnemigos((PaqueteDeEnemigos)gson.fromJson(cadenaLeida,PaqueteDeEnemigos.class));
-		try {
-			PaqueteDeEnemigos packEnemigos = new PaqueteDeEnemigos(Servidor.getEnemigos());
-			packEnemigos.setComando(Comando.SETENEMIGOS);
-			escuchaCliente.getSalida().writeObject(gson.toJson(packEnemigos));
-		} catch (IOException e) {
-			Servidor.log.append("Error al setear a los enemigos en el mapa.\n");
-		}
-	}
+    /**
+     * Método que ubica los NPC y los envía a todos los clientes.
+    */
+    @Override
+    public void ejecutar() {
+
+        escuchaCliente.setPaqueteDeEnemigos((PaqueteDeEnemigos)
+             gson.fromJson(cadenaLeida, PaqueteDeEnemigos.class));
+        try {
+            PaqueteDeEnemigos packEnemigos =
+                 new PaqueteDeEnemigos(Servidor.getEnemigos());
+            packEnemigos.setComando(Comando.SETENEMIGOS);
+            escuchaCliente.getSalida().writeObject(gson.toJson(packEnemigos));
+        } catch (IOException e) {
+            Servidor.log.append("Error al setear a los enemigos en el mapa.\n");
+       }
+    }
 }

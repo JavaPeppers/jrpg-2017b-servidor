@@ -26,46 +26,99 @@ import mensajeria.PaqueteMensaje;
 import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
 
+/**
+ * Clase que se encarga de administrar y establecer
+ * la conexión entre los clientes.
+ */
 public class Servidor extends Thread {
 
-	private static ArrayList<EscuchaCliente> clientesConectados = new ArrayList<>();
-	
-	private static Map<Integer, PaqueteMovimiento> ubicacionPersonajes = new HashMap<>();
-	private static Map<Integer, PaquetePersonaje> personajesConectados = new HashMap<>();
-	private static Map<Integer, PaqueteEnemigo> enemigos = new HashMap<>();
+    /** ArraryList que tiene los clientes conectados. **/
+    private static ArrayList<EscuchaCliente>
+            clientesConectados = new ArrayList<>();
 
-	private static Thread server;
-	
-	private static ServerSocket serverSocket;
-	private static Conector conexionDB;
-	private final int PUERTO = 55050;
+    /** Map que almacena la ubicación de los personajes. **/
+    private static Map<Integer, PaqueteMovimiento>
+           ubicacionPersonajes = new HashMap<>();
 
-	private final static int ANCHO = 700;
-	private final static int ALTO = 640;
-	private final static int ALTO_LOG = 520;
-	private final static int ANCHO_LOG = ANCHO - 25;
+    /** Map que almacena los personajes conectados. **/
+    private static Map<Integer, PaquetePersonaje>
+           personajesConectados = new HashMap<>();
 
-	public static JTextArea log;
-	
-	public static AtencionConexiones atencionConexiones;
-	public static AtencionMovimientos atencionMovimientos;
+    /** Map que almacena la ubicación de los enemigos. **/
+    private static Map<Integer, PaqueteEnemigo> enemigos = new HashMap<>();
 
-	public static void main(String[] args) {
-		cargarInterfaz();	
-	}
+    /** Hilo del servidor. **/
+    private static Thread server;
 
-	private static void cargarInterfaz() {
-		JFrame ventana = new JFrame("Servidor WOME");
-		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		ventana.setSize(ANCHO, ALTO);
-		ventana.setResizable(false);
-		ventana.setLocationRelativeTo(null);
-		ventana.setLayout(null);
-		ventana.setIconImage(Toolkit.getDefaultToolkit().getImage("src/main/java/servidor/server.png"));
-		JLabel titulo = new JLabel("Log del servidor...");
-		titulo.setFont(new Font("Courier New", Font.BOLD, 16));
-		titulo.setBounds(10, 0, 200, 30);
-		ventana.add(titulo);
+    /** Socket del servidor. **/
+    private static ServerSocket serverSocket;
+
+    /** Conector con la base de datos.**/
+    private static Conector conexionDB;
+
+    /** Puerto. **/
+    private static final int PUERTO = 55050;
+
+    /** Variable que almacena el ancho. **/
+    private static final int ANCHO = 700;
+
+    /** Variable que almacena el alto. **/
+    private static final int ALTO = 640;
+
+    /** Variable que almacena el alto del frame del log. **/
+    private static final int ALTO_LOG = 520;
+
+    /** Variable que almacena el ancho del frame del log. **/
+    private static final int ANCHO_LOG = ANCHO - 25;
+
+    /** Variable que almacena la entrada del usuario. **/
+    public static JTextArea log;
+
+    /** Variable que atiende las conexiones. **/
+    public static AtencionConexiones atencionConexiones;
+
+    /** Variable que atiende los movimientos. **/
+    public static AtencionMovimientos atencionMovimientos;
+
+    /** Variable que indica el tamanio de la fuente. **/
+    private static final int TAMFUENTE = 16;
+
+    /** Variable que indica X. **/
+    private static final int X = 10;
+
+    /** Variable que indica Y. **/
+    private static final int Y = 0;
+
+    /** Variable que indica el ancho. **/
+    private static final int WIDTH = 200;
+
+    /** Variable que indica el alto. **/
+    private static final int HEIGHT = 30;
+
+    /**
+     * Main.
+     * @param args args
+     */
+     public static void main(final String[] args) {
+        cargarInterfaz();
+    }
+
+    /**
+     * Método que carga la interfaz.
+     */
+     private static void cargarInterfaz() {
+        JFrame ventana = new JFrame("Servidor WOME");
+        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ventana.setSize(ANCHO, ALTO);
+        ventana.setResizable(false);
+        ventana.setLocationRelativeTo(null);
+        ventana.setLayout(null);
+        ventana.setIconImage(Toolkit.getDefaultToolkit()
+             .getImage("src/main/java/servidor/server.png"));
+        JLabel titulo = new JLabel("Log del servidor...");
+        titulo.setFont(new Font("Courier New", Font.BOLD, TAMFUENTE));
+        titulo.setBounds(X, Y, WIDTH, HEIGHT);
+        ventana.add(titulo);
 
 		log = new JTextArea();
 		log.setEditable(false);

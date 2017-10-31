@@ -2,13 +2,23 @@ package comandos;
 
 import mensajeria.Comando;
 import servidor.EscuchaCliente;
+/**
+ * Clase que se encarga de establecer
+ * la escucha con el cliente.
+ */
+public abstract class ComandosServer extends Comando {
 
-public abstract class ComandosServer extends Comando{
-	
-	protected EscuchaCliente escuchaCliente;
+    /**
+     * Variable que tendrá todos los paquetes
+     * provenientes del cliente.
+     */
+    protected EscuchaCliente escuchaCliente;
 
-	public void setEscuchaCliente(EscuchaCliente escuchaCliente) {
-		this.escuchaCliente = escuchaCliente;
-	}
-	
+    /**
+     * Método que recibe el escuchaCliente.
+     */
+    public void setEscuchaCliente(EscuchaCliente escuchaCliente) {
+        this.escuchaCliente = escuchaCliente;
+    }
+
 }
