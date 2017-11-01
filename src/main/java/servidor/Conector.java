@@ -89,10 +89,10 @@ public class Conector {
      */
     public void connect() {
         try {
-            Servidor.log.append("Estableciendo conexión"
+            Servidor.log.append("Estableciendo conexión "
                   + "con la base de datos..." + System.lineSeparator());
             connect = DriverManager.getConnection("jdbc:sqlite:" + url);
-            Servidor.log.append("Conexión con la base de datos"
+            Servidor.log.append("Conexión con la base de datos "
                   + "establecida con éxito." + System.lineSeparator());
             } catch (SQLException ex) {
             Servidor.log.append("Fallo al intentar establecer la conexión"
@@ -507,7 +507,7 @@ public class Conector {
         PreparedStatement st;
 
         try {
-            st = connect.prepareStatement("SELECT *"
+            st = connect.prepareStatement("SELECT * "
                    + "FROM registro WHERE usuario = ?");
             st.setString(1, usuario);
             result = st.executeQuery();

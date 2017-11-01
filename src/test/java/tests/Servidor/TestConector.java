@@ -1,4 +1,4 @@
-package testsServidor;
+package tests.Servidor;
 
 import java.io.IOException;
 import java.util.Random;
