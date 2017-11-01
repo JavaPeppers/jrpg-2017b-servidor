@@ -40,7 +40,7 @@ public class AtencionConexiones extends Thread {
                         : Servidor.getClientesConectados()) {
 
                          if (conectado.getPaquetePersonaje().getEstado()
-                               != Estado.estadoOffline) {
+                               != Estado.ESTADOOFFLINE) {
 
                             PaqueteDePersonajes pdp = (PaqueteDePersonajes)
                                   new PaqueteDePersonajes(Servidor

@@ -23,7 +23,7 @@ public class Batalla extends ComandosServer {
     public void ejecutar() {
         // Le reenvio al id del personaje batallado que quieren pelear
         escuchaCliente.setPaqueteBatalla((PaqueteBatalla)
-              gson.fromJson(cadenaLeida, PaqueteBatalla.class));
+              getGson().fromJson(getCadenaLeida(), PaqueteBatalla.class));
         Servidor.log.append(escuchaCliente.getPaqueteBatalla().getId()
                 + " quiere batallar con "
                 + escuchaCliente.getPaqueteBatalla().getIdEnemigo()
@@ -32,13 +32,13 @@ public class Batalla extends ComandosServer {
             // seteo estado de batalla
             Servidor.getPersonajesConectados().get(
                   escuchaCliente.getPaqueteBatalla().getId())
-                  .setEstado(Estado.estadoBatalla);
+                  .setEstado(Estado.ESTADOBATALLA);
             Servidor.getPersonajesConectados().get(
                   escuchaCliente.getPaqueteBatalla().getIdEnemigo())
-                  .setEstado(Estado.estadoBatalla);
+                  .setEstado(Estado.ESTADOBATALLA);
             escuchaCliente.getPaqueteBatalla().setMiTurno(true);
             escuchaCliente.getSalida().writeObject(
-                   gson.toJson(escuchaCliente.getPaqueteBatalla()));
+                   getGson().toJson(escuchaCliente.getPaqueteBatalla()));
             for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
                 if (conectado.getIdPersonaje()
                     == escuchaCliente.getPaqueteBatalla().getIdEnemigo()) {
@@ -47,7 +47,7 @@ public class Batalla extends ComandosServer {
                            escuchaCliente.getPaqueteBatalla().getIdEnemigo());
                     escuchaCliente.getPaqueteBatalla().setIdEnemigo(aux);
                     escuchaCliente.getPaqueteBatalla().setMiTurno(false);
-                    conectado.getSalida().writeObject(gson.toJson(
+                    conectado.getSalida().writeObject(getGson().toJson(
                            escuchaCliente.getPaqueteBatalla()));
                     break;
                     }

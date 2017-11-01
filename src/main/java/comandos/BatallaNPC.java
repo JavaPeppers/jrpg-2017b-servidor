@@ -19,7 +19,7 @@ public class BatallaNPC extends ComandosServer {
     public void ejecutar() {
 
         escuchaCliente.setPaqueteBatallaNPC((PaqueteBatallaNPC)
-              gson.fromJson(cadenaLeida, PaqueteBatallaNPC.class));
+              getGson().fromJson(getCadenaLeida(), PaqueteBatallaNPC.class));
 
         Servidor.log.append(escuchaCliente.getPaqueteBatallaNPC().getId()
               + " va a pelear con Enemigo de Id "
@@ -29,11 +29,11 @@ public class BatallaNPC extends ComandosServer {
             // seteo estado de batalla
             Servidor.getPersonajesConectados().get(
                     escuchaCliente.getPaqueteBatallaNPC().getId())
-                    .setEstado(Estado.estadoBatallaNPC);
+                    .setEstado(Estado.ESTADOBATALLANPC);
             Servidor.getEnemigos().get(escuchaCliente.getPaqueteBatallaNPC()
-                    .getIdEnemigo()).setEstado(Estado.estadoBatallaNPC);
+                    .getIdEnemigo()).setEstado(Estado.ESTADOBATALLANPC);
             escuchaCliente.getPaqueteBatallaNPC().setMiTurno(true);
-            escuchaCliente.getSalida().writeObject(gson.toJson(
+            escuchaCliente.getSalida().writeObject(getGson().toJson(
                  escuchaCliente.getPaqueteBatallaNPC()));
 
         } catch (Exception e) {

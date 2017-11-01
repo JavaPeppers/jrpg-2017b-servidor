@@ -23,7 +23,7 @@ public class Talk extends ComandosServer {
         int idUser = 0;
         int contador = 0;
         PaqueteMensaje paqueteMensaje = (PaqueteMensaje)
-             (gson.fromJson(cadenaLeida, PaqueteMensaje.class));
+             (getGson().fromJson(getCadenaLeida(), PaqueteMensaje.class));
 
         if (!(paqueteMensaje.getUserReceptor() == null)) {
            if (Servidor.mensajeAUsuario(paqueteMensaje)) {
@@ -40,7 +40,7 @@ public class Talk extends ComandosServer {
                         if (conectado.getIdPersonaje() == idUser) {
                           try {
                              conectado.getSalida().writeObject(
-                                  gson.toJson(paqueteMensaje));
+                                  getGson().toJson(paqueteMensaje));
                              } catch (IOException e) {
                             Servidor.log.append("Falló al intentar enviar"
                                  + "mensaje a:"
@@ -64,7 +64,7 @@ public class Talk extends ComandosServer {
                  if (conectado.getIdPersonaje() != idUser) {
                      try {
                     conectado.getSalida().writeObject(
-                           gson.toJson(paqueteMensaje));
+                           getGson().toJson(paqueteMensaje));
                     } catch (IOException e) {
                     Servidor.log.append("Falló al intentar enviar"
                     + "mensaje a:"

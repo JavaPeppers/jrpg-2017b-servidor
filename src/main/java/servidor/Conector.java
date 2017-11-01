@@ -303,7 +303,7 @@ public class Conector {
         try {
             // Busco usuario y contraseña
             PreparedStatement st = connect
-                 .prepareStatement("SELECT * FROM registro WHERE"
+                 .prepareStatement("SELECT * FROM registro WHERE "
                         + "usuario = ? AND password = ? ");
             st.setString(1, user.getUsername());
             st.setString(2, user.getPassword());
@@ -343,7 +343,7 @@ public class Conector {
                   + "destreza=?, inteligencia=?, saludTope=?, energiaTope=?,"
                   + "experiencia=?, nivel=?, puntosSkills=?, fuerzaSkill=?,"
                   + "inteligenciaSkill=?, destrezaSkill=? "
-                  + "  WHERE idPersonaje=?");
+                  + "WHERE idPersonaje=?");
 
             stActualizarPersonaje.setInt(PARAM1, paquetePersonaje.getFuerza());
             stActualizarPersonaje.setInt(PARAM2,
@@ -433,7 +433,7 @@ public class Conector {
 
             // Selecciono los datos del personaje
             PreparedStatement stSeleccionarPersonaje = connect
-                  .prepareStatement("SELECT * FROM personaje"
+                  .prepareStatement("SELECT * FROM personaje "
                          + "WHERE idPersonaje = ?");
             stSeleccionarPersonaje.setInt(1, idPersonaje);
             result = stSeleccionarPersonaje.executeQuery();
@@ -616,7 +616,7 @@ public class Conector {
                  + "destreza=?, inteligencia=?, saludTope=?, energiaTope=?,"
                  + "experiencia=?, nivel=?, puntosSkills=?, fuerzaSkill=?,"
                  + "inteligenciaSkill=?, destrezaSkill=?"
-                 + "  WHERE idPersonaje=?");
+                 + " WHERE idPersonaje=?");
 
             stActualizarPersonaje.setInt(PARAM1, paquetePersonaje.getFuerza());
             stActualizarPersonaje.setInt(PARAM2,

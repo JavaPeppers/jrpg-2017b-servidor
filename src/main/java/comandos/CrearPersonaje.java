@@ -18,7 +18,7 @@ public class CrearPersonaje extends ComandosServer {
     public void ejecutar() {
         // Casteo el paquete personaje
         escuchaCliente.setPaquetePersonaje((PaquetePersonaje)
-            (gson.fromJson(cadenaLeida, PaquetePersonaje.class)));
+            (getGson().fromJson(getCadenaLeida(), PaquetePersonaje.class)));
         // Guardo el personaje en ese usuario
         Servidor.getConector().registrarPersonaje(escuchaCliente
             .getPaquetePersonaje(), escuchaCliente.getPaqueteUsuario());
@@ -28,7 +28,7 @@ public class CrearPersonaje extends ComandosServer {
             paquetePersonaje = Servidor.getConector().getPersonaje(
                   escuchaCliente.getPaqueteUsuario());
             escuchaCliente.setIdPersonaje(paquetePersonaje.getId());
-            escuchaCliente.getSalida().writeObject(gson.toJson(
+            escuchaCliente.getSalida().writeObject(getGson().toJson(
                   escuchaCliente.getPaquetePersonaje(),
                   escuchaCliente.getPaquetePersonaje().getClass()));
             } catch (IOException e1) {

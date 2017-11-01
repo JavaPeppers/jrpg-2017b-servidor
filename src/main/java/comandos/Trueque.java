@@ -20,14 +20,14 @@ public class Trueque extends ComandosServer {
     public void ejecutar() {
         PaqueteComerciar paqueteComerciar;
         paqueteComerciar = (PaqueteComerciar)
-             gson.fromJson(cadenaLeida, PaqueteComerciar.class);
+             getGson().fromJson(getCadenaLeida(), PaqueteComerciar.class);
         //BUSCO EN LAS ESCUCHAS AL QUE SE LO TENGO QUE MANDAR
         for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
            if (conectado.getPaquetePersonaje().getId()
                   == paqueteComerciar.getIdEnemigo()) {
                 try {
                    conectado.getSalida().writeObject(
-                       gson.toJson(paqueteComerciar));
+                       getGson().toJson(paqueteComerciar));
                  } catch (IOException e) {
                     Servidor.log.append("Falló al intentar enviar trueque a:"
                     + conectado.getPaquetePersonaje().getId() + "\n");
@@ -36,7 +36,7 @@ public class Trueque extends ComandosServer {
                     == paqueteComerciar.getId()) {
                 try {
                     conectado.getSalida().writeObject(
-                          gson.toJson(paqueteComerciar));
+                          getGson().toJson(paqueteComerciar));
                     } catch (IOException e) {
                       Servidor.log.append("Falló al intentar enviar trueque a:"
                       + conectado.getPaquetePersonaje().getId() + "\n");

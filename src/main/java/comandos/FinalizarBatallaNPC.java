@@ -28,13 +28,13 @@ public class FinalizarBatallaNPC extends ComandosServer {
     @Override
     public void ejecutar() {
         PaqueteFinalizarBatallaNPC paqueteFinalizarBatalla =
-                (PaqueteFinalizarBatallaNPC) gson.
-                fromJson(cadenaLeida, PaqueteFinalizarBatallaNPC.class);
+                (PaqueteFinalizarBatallaNPC) getGson().
+                fromJson(getCadenaLeida(), PaqueteFinalizarBatallaNPC.class);
                 escuchaCliente.setPaqueteFinalizarBatallaNPC(
                 paqueteFinalizarBatalla);
         Servidor.getPersonajesConectados().get(
                 escuchaCliente.getPaqueteFinalizarBatallaNPC().getId())
-                .setEstado(Estado.estadoJuego);
+                .setEstado(Estado.ESTADOJUEGO);
         // VER SI TIENE PERSONAJES CERCA
         float x = 0;
         float y = 0;
@@ -67,7 +67,7 @@ public class FinalizarBatallaNPC extends ComandosServer {
                   getPaqueteFinalizarBatallaNPC().getIdEnemigo();
             Servidor.getEnemigos().get(idEnemigo).setX(x);
             Servidor.getEnemigos().get(idEnemigo).setY(y);
-            Servidor.getEnemigos().get(idEnemigo).setEstado(Estado.estadoJuego);
+            Servidor.getEnemigos().get(idEnemigo).setEstado(Estado.ESTADOJUEGO);
         }
         synchronized (Servidor.atencionConexiones) {
             Servidor.atencionConexiones.notify();

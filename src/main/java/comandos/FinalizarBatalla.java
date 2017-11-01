@@ -16,21 +16,21 @@ public class FinalizarBatalla extends ComandosServer {
     public final void ejecutar() {
 
         PaqueteFinalizarBatalla paqueteFinalizarBatalla =
-              (PaqueteFinalizarBatalla) gson.fromJson(cadenaLeida,
+              (PaqueteFinalizarBatalla) getGson().fromJson(getCadenaLeida(),
               PaqueteFinalizarBatalla.class);
         escuchaCliente.setPaqueteFinalizarBatalla(paqueteFinalizarBatalla);
         Servidor.getConector().actualizarInventario(
               paqueteFinalizarBatalla.getGanadorBatalla());
         Servidor.getPersonajesConectados().get(escuchaCliente.
-        getPaqueteFinalizarBatalla().getId()).setEstado(Estado.estadoJuego);
+        getPaqueteFinalizarBatalla().getId()).setEstado(Estado.ESTADOJUEGO);
         Servidor.getPersonajesConectados().get(escuchaCliente.
               getPaqueteFinalizarBatalla().getIdEnemigo()).
-              setEstado(Estado.estadoJuego);
+              setEstado(Estado.ESTADOJUEGO);
         for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
             if (conectado.getIdPersonaje() == escuchaCliente.
                 getPaqueteFinalizarBatalla().getIdEnemigo()) {
                 try {
-                    conectado.getSalida().writeObject(gson.toJson(
+                    conectado.getSalida().writeObject(getGson().toJson(
                           escuchaCliente.getPaqueteFinalizarBatalla()));
                 } catch (IOException e) {
                   Servidor.log.append("Falló al intentar enviar"

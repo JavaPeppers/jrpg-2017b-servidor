@@ -40,7 +40,7 @@ public class AtencionMovimientos extends Thread {
                           : Servidor.getClientesConectados()) {
 
                      if (conectado.getPaquetePersonaje().getEstado()
-                          == Estado.estadoJuego) {
+                          == Estado.ESTADOJUEGO) {
 
                             //Envio la ubicacion de todos los personajes
                             PaqueteDeMovimientos pdp = (PaqueteDeMovimientos)
