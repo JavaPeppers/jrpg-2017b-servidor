@@ -10,6 +10,15 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+import javax.security.auth.login.Configuration;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
+import Hibernate.HibernateUtil;
 import mensajeria.PaquetePersonaje;
 import mensajeria.PaqueteUsuario;
 
@@ -17,7 +26,8 @@ import mensajeria.PaqueteUsuario;
  * Clase que se encarga de la comunicación con la base de datos.
  */
 public class Conector {
-
+	
+	
     /** url de la base de datos. **/
     private String url = "primeraBase.bd";
 
@@ -245,6 +255,52 @@ public class Conector {
             return false;
          }
 }
+     public boolean registrarPersonaje2(final PaquetePersonaje paquetePersonaje,
+             final PaqueteUsuario paqueteUsuario) {
+    	 	// Preparo sesion de hibernate
+    	 	HibernateUtil config = new HibernateUtil();
+     		//Configuration cfg = new Configuration();
+     		//config.configure("Config.xml");
+     		SessionFactory factory = config.getSessionFactory();
+     		Session session = factory.openSession();
+     		
+     		paquetePersonaje.setAlianza(-1);
+     		paquetePersonaje.setExperiencia(0);
+     		paquetePersonaje.setInventario(-1);
+     		paquetePersonaje.setMochila(-1);
+     		paquetePersonaje.setNivel(1);
+     		
+     		Transaction transaccion = session.beginTransaction();
+     		try{
+     			paquetePersonaje.setId((Integer) session.save(paquetePersonaje));
+     			transaccion.commit();
+     			System.out.println("Parada 1");
+     			paqueteUsuario.setIdPj(paquetePersonaje.getId());
+     			Transaction transaction =session.beginTransaction();
+     			session.update(paqueteUsuario);
+     			transaction.commit();
+     			System.out.println("Parada 2");
+     			if (this.registrarInventarioMochila(paquetePersonaje.getId())) {
+     				Servidor.log.append("El usuario " + paqueteUsuario.getUsername() + " ha creado el personaje "
+     						+ paquetePersonaje.getId() + System.lineSeparator());
+     				System.out.println("Parada 3");
+     				return true;
+     			} else {
+     				Servidor.log.append("Error al registrar la mochila y el inventario del usuario " + paqueteUsuario.getUsername() + " con el personaje" + paquetePersonaje.getId() + System.lineSeparator());
+     				return false;
+     			}
+     		} catch (HibernateException e) {
+     			//Si fall�, hago un rollback de la transaccion, cierro sesion, escribo el log y me voy
+     			if (transaccion != null)
+     				transaccion.rollback();
+     			e.printStackTrace();
+     			session.close();
+     			factory.close();
+     			Servidor.log.append(
+     					"Error al intentar crear el personaje " + paquetePersonaje.getNombre() + System.lineSeparator());
+     			return false;
+     		}
+     }
     /**
      * Método que registra el inventario del personaje.
      * @param idInventarioMochila identificador del inventario
