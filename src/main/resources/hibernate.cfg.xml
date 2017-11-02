@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0 //EN"
 'http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd'>
@@ -11,6 +10,7 @@
 		<property name="show_sql">true</property>
 		<property name="format_sql">true</property>
 		<!--Agregar un mapping resource por cada clase/tabla que haya que mapear con esta config-->
+         <mapping resource="src/main/java/hbnModel/PaqueteUsuario.hbm.xml" />
          <mapping resource="src/main/java/hbnModel/personaje.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>

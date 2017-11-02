@@ -6,10 +6,15 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import dao.HibernateUtil;
 import mensajeria.PaquetePersonaje;
 import mensajeria.PaqueteUsuario;
 
@@ -118,7 +123,56 @@ public class Conector {
      * @param user PaqueteUsuario con los datos del usuario a registrar.
      * @return boolean Resultado del registro.
      */
-     public boolean registrarUsuario(final PaqueteUsuario user) {
+    public boolean registrarUsuario(final PaqueteUsuario user) {
+    	
+    	Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = null;
+		try
+		{
+			//TODO: usar HQL
+			transaction = session.beginTransaction();
+			List<PaqueteUsuario> uList = session.createQuery("FROM registro WHERE usuario= ? ").list();
+			
+			if (uList.isEmpty()) {
+				PaqueteUsuario u = new PaqueteUsuario(user.getIdPj(),user.getUsername(),user.getPassword());      		
+        		//Transaction transaction2 = null;// Hace falta otra?
+        		try{
+        			transaction = session.beginTransaction();
+        			session.save(u);
+        			transaction.commit();
+        			Servidor.log.append("El usuario "
+        	                + user.getUsername()
+        	                + " se ha registrado."
+        	                + System.lineSeparator());
+        			return true;
+        		}
+        		catch(Exception ex){
+        			Servidor.log.append("Error al intentar registrar el usuario "
+        		            + user.getUsername() + System.lineSeparator());
+        		            System.err.println(ex.getMessage());
+        		            return false;
+        		}
+        		finally{
+        			session.close();
+        		}
+			
+			}
+			else {
+	               Servidor.log.append("El usuario "
+	            	        + user.getUsername()
+	            	        + " ya se encuentra en uso." + System.lineSeparator());
+	            	                return false;
+	      }			
+		}catch(Exception e) {
+			Servidor.log.append("Error al intentar registrar el usuario "
+		            + user.getUsername() + System.lineSeparator());
+		            System.err.println(e.getMessage());
+		            return false;
+		}          	            	            	            	                                 
+   }
+
+    //DEPRECADO
+     public boolean OLDregistrarUsuario(final PaqueteUsuario user) {
         ResultSet result = null;
         try {
             PreparedStatement st1 = connect.prepareStatement(
