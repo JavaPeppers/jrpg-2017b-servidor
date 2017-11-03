@@ -36,29 +36,28 @@ public class AtencionConexiones extends Thread {
                   wait();
 
                     // Le reenvio la conexion a todos
-                    for (EscuchaCliente conectado
-                        : Servidor.getClientesConectados()) {
+                    for (EscuchaCliente conectado: Servidor.getClientesConectados()) {
 
                          if (conectado.getPaquetePersonaje().getEstado()
                                != Estado.ESTADOOFFLINE) {
 
                             PaqueteDePersonajes pdp = (PaqueteDePersonajes)
-                                  new PaqueteDePersonajes(Servidor
-                                     .getPersonajesConectados()).clone();
+                                  new PaqueteDePersonajes(Servidor.
+                                		  getPersonajesConectados()).clone();
                             pdp.setComando(Comando.CONEXION);
                             synchronized (conectado) {
                                  conectado.getSalida().writeObject(
                                        gson.toJson(pdp));
                                  }
 
-                            PaqueteDeEnemigos pde = (PaqueteDeEnemigos)
-                                  new PaqueteDeEnemigos(
-                                      Servidor.getEnemigos()).clone();
-                            pde.setComando(Comando.SETENEMIGOS);
-                            synchronized (conectado) {
-                                 conectado.getSalida().writeObject(
-                                      gson.toJson(pde));
-                                 }
+//                            PaqueteDeEnemigos pde = (PaqueteDeEnemigos)
+//                                  new PaqueteDeEnemigos(
+//                                      Servidor.getEnemigos()).clone();
+//                            pde.setComando(Comando.SETENEMIGOS);
+//                            synchronized (conectado) {
+//                                 conectado.getSalida().writeObject(
+//                                      gson.toJson(pde));
+//                                 }
                             }
                          }
                     }

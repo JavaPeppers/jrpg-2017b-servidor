@@ -54,7 +54,7 @@ public class Batalla extends ComandosServer {
                 }
             } catch (IOException e) {
                 Servidor.log.append("Falló al intentar enviar Batalla \n");
-                }
+            }
         synchronized (Servidor.atencionConexiones) {
             Servidor.atencionConexiones.notify();
             }
