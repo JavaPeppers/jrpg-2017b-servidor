@@ -48,14 +48,16 @@ public class BatallaNPC extends ComandosServer {
             PaqueteEnemigo paqueteEnemigo = Servidor.getEnemigos().get(idEnemigo);
             paqueteEnemigo.setComando(Comando.DESAPARECERENEMIGO);
             
-            for (EscuchaCliente conectado : Servidor.getClientesConectados()) {	
-                try {
-                    conectado.getSalida().writeObject(getGson().toJson(paqueteEnemigo));
-                } catch (IOException e) {
-                  Servidor.log.append("Falló al intentar enviar"
-                  + "DesaparecerEnemigo a:"
-                  + conectado.getPaquetePersonaje().getId() + "\n");
-                }
+            for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
+            	if(conectado.getPaquetePersonaje().getMapa() == paqueteEnemigo.getMapa()) {
+	                try {
+	                    conectado.getSalida().writeObject(getGson().toJson(paqueteEnemigo));
+	                } catch (IOException e) {
+	                  Servidor.log.append("Falló al intentar enviar"
+	                  + "DesaparecerEnemigo a:"
+	                  + conectado.getPaquetePersonaje().getId() + "\n");
+	                }
+            	}
         	}
             
 

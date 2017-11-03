@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import estados.Estado;
 import mensajeria.Comando;
-import mensajeria.PaqueteDeEnemigos;
 import mensajeria.PaqueteDePersonajes;
 
 /**
@@ -42,22 +41,12 @@ public class AtencionConexiones extends Thread {
                                != Estado.ESTADOOFFLINE) {
 
                             PaqueteDePersonajes pdp = (PaqueteDePersonajes)
-                                  new PaqueteDePersonajes(Servidor.
-                                		  getPersonajesConectados()).clone();
+                                  new PaqueteDePersonajes(Servidor.getPersonajesConectados()).clone();
                             pdp.setComando(Comando.CONEXION);
                             synchronized (conectado) {
                                  conectado.getSalida().writeObject(
                                        gson.toJson(pdp));
                                  }
-
-//                            PaqueteDeEnemigos pde = (PaqueteDeEnemigos)
-//                                  new PaqueteDeEnemigos(
-//                                      Servidor.getEnemigos()).clone();
-//                            pde.setComando(Comando.SETENEMIGOS);
-//                            synchronized (conectado) {
-//                                 conectado.getSalida().writeObject(
-//                                      gson.toJson(pde));
-//                                 }
                             }
                          }
                     }

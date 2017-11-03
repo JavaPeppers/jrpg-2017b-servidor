@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import mensajeria.Comando;
 import mensajeria.PaqueteDeEnemigos;
+import mensajeria.PaquetePersonaje;
 import servidor.Servidor;
 
 /**
@@ -17,11 +18,17 @@ public class SetEnemigos extends ComandosServer {
     @Override
     public void ejecutar() {
 
-        escuchaCliente.setPaqueteDeEnemigos((PaqueteDeEnemigos)
-             getGson().fromJson(getCadenaLeida(), PaqueteDeEnemigos.class));
+        escuchaCliente.setPaquetePersonaje((PaquetePersonaje)
+             getGson().fromJson(getCadenaLeida(), PaquetePersonaje.class));
         try {
-            PaqueteDeEnemigos packEnemigos =
-                 new PaqueteDeEnemigos(Servidor.getEnemigos());
+            PaqueteDeEnemigos packEnemigos = new PaqueteDeEnemigos();
+            int aux = escuchaCliente.getPaquetePersonaje().getMapa();
+            if(aux == 1)
+	            for(int i = -1; i>=-10; i--)
+	            	packEnemigos.getEnemigos().put(i, Servidor.getEnemigos().get(i));
+            if(aux == 2)
+            	for(int i = -11; i>=-20; i--)
+            		packEnemigos.getEnemigos().put(i, Servidor.getEnemigos().get(i));
             packEnemigos.setComando(Comando.SETENEMIGOS);
             escuchaCliente.getSalida().writeObject(getGson().toJson(packEnemigos));
         } catch (IOException e) {

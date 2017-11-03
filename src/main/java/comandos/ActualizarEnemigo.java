@@ -60,13 +60,15 @@ public class ActualizarEnemigo extends ComandosServer {
 			escuchaCliente.setPaqueteEnemigo(Servidor.getEnemigos().get(idEnemigo));
 			escuchaCliente.getPaqueteEnemigo().setComando(Comando.ACTUALIZARENEMIGO);
 			for(EscuchaCliente conectado: Servidor.getClientesConectados()) {
-				try {
-					conectado.getSalida().writeObject(
-		                    getGson().toJson(escuchaCliente.getPaqueteEnemigo()));
-				} catch (IOException e) {
-					Servidor.log.append("Falló al intentar enviar "
-		                    + "paqueteEnemigo a:" + conectado.getPaquetePersonaje().
-		                    getId() + "\n");
+				if(conectado.getPaquetePersonaje().getMapa() == escuchaCliente.getPaqueteEnemigo().getMapa()) {
+					try {
+						conectado.getSalida().writeObject(
+			                    getGson().toJson(escuchaCliente.getPaqueteEnemigo()));
+					} catch (IOException e) {
+						Servidor.log.append("Falló al intentar enviar "
+			                    + "paqueteEnemigo a:" + conectado.getPaquetePersonaje().
+			                    getId() + "\n");
+					}
 				}
 			}
 

@@ -227,11 +227,15 @@ public class Servidor extends Thread {
 			atencionMovimientos.start();
 			
 			//Ubico a los enemigos en el hashMap de enemigos
-			for(int i=-1;i>=-10;i--) {
+			for(int i=-1;i>=-20;i--) {
 				
 				float x = (float)Math.random()*(250-1500)+1500;
 				float y = (float)Math.random()*(x/2-1600)+1600;
 				PaqueteEnemigo paqueteEnemigo = new PaqueteEnemigo(i,x,y);
+				if(i>=-10)
+					paqueteEnemigo.setMapa(1);
+				if(i<-10 && i>=-20)
+					paqueteEnemigo.setMapa(2);
 				enemigos.put(i, paqueteEnemigo);
 				
 				setEnemigos(enemigos);
