@@ -247,34 +247,25 @@ public class Servidor extends Thread {
 
 	
 	public static boolean mensajeAUsuario(PaqueteMensaje pqm) {
-		boolean result = true;
-		boolean noEncontro = true;
+		boolean encontro = false;
 		for (Map.Entry<Integer, PaquetePersonaje> personaje : personajesConectados.entrySet()) {
-			if(noEncontro && (!personaje.getValue().getNombre().equals(pqm.getUserReceptor()))) {
-				result = false;
-			} else {
-				result = true;
-				noEncontro = false;
-			}
+			if(!encontro && (personaje.getValue().getNombre().equals(pqm.getUserReceptor()))) {
+				encontro = true;
+			} 
 		}
 		// Si existe inicio sesion
-		if (result) {
+		if (encontro) {
 			Servidor.log.append(pqm.getUserEmisor() + " envió mensaje a " + pqm.getUserReceptor() + System.lineSeparator());
 				return true;
-		} else {
-			// Si no existe informo y devuelvo false
-			Servidor.log.append("El mensaje para " + pqm.getUserReceptor() + " no se envió, ya que se encuentra desconectado." + System.lineSeparator());
-			return false;
-		}
+		} 
+		// Si no existe informo y devuelvo false
+		Servidor.log.append("El mensaje para " + pqm.getUserReceptor() + " no se envió, ya que se encuentra desconectado." + System.lineSeparator());
+		return false;
 	}
 	
 	public static boolean mensajeAAll(int contador) {
-		boolean result = true;
-		if(personajesConectados.size() != contador+1) {
-			result = false;
-		}
 		// Si existe inicio sesion
-		if (result) {
+		if (!(personajesConectados.size() != contador+1)) {
 			Servidor.log.append("Se ha enviado un mensaje a todos los usuarios" + System.lineSeparator());
 				return true;
 		} else {

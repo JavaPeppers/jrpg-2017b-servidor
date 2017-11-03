@@ -140,12 +140,13 @@ public class Conector {
                 + " se ha registrado."
                 + System.lineSeparator());
                 return true;
-        } else {
-               Servidor.log.append("El usuario "
+        } 
+        
+            Servidor.log.append("El usuario "
         + user.getUsername()
         + " ya se encuentra en uso." + System.lineSeparator());
                 return false;
-           }
+           
         } catch (SQLException ex) {
             Servidor.log.append("Error al intentar registrar el usuario "
             + user.getUsername() + System.lineSeparator());
@@ -227,14 +228,13 @@ public class Conector {
                     + paqueteUsuario.getUsername() + " ha creado el personaje "
                     + paquetePersonaje.getId() + System.lineSeparator());
                     return true;
-                    } else {
-                    Servidor.log.append("Error al registrar la mochila y"
-                          + "el inventario del usuario "
-                          + paqueteUsuario.getUsername()
-                          + " con el personaje"
-                          + paquetePersonaje.getId() + System.lineSeparator());
-                    return false;
-               }
+                }
+                
+                Servidor.log.append("Error al registrar la mochila y"
+                      + "el inventario del usuario "
+                      + paqueteUsuario.getUsername()
+                      + " con el personaje"
+                      + paquetePersonaje.getId() + System.lineSeparator());
             }
             return false;
 
@@ -535,7 +535,6 @@ public class Conector {
       * @param paquetePersonaje datos del personaje a actualizar.
       */
      public void actualizarInventario(final PaquetePersonaje paquetePersonaje) {
-        int i = 0;
         PreparedStatement stActualizarMochila;
         try {
             stActualizarMochila = connect.prepareStatement(
@@ -544,9 +543,8 @@ public class Conector {
                    + ",item10=? ,item11=? ,item12=? ,item13=? ,item14=?"
                    + ",item15=?,item16=? ,item17=? ,item18=? ,item19=?"
                    + ",item20=? WHERE idMochila=?");
-           while (i < paquetePersonaje.getCantItems()) {
+           for(int i = 0;i < paquetePersonaje.getCantItems(); i++) {
                stActualizarMochila.setInt(i + 1, paquetePersonaje.getItemID(i));
-               i++;
            }
            for (int j = paquetePersonaje.getCantItems();
                    j < CANTITEMSMAXMOCHILA; j++) {
@@ -564,7 +562,6 @@ public class Conector {
      * @param idPersonaje al que se le desea actualizar el inventario.
      */
      public void actualizarInventario(final int idPersonaje) {
-        int i = 0;
         PaquetePersonaje paquetePersonaje = Servidor
              .getPersonajesConectados().get(idPersonaje);
         PreparedStatement stActualizarMochila;
@@ -575,9 +572,8 @@ public class Conector {
                  + ",item10=? ,item11=? ,item12=? ,item13=? ,item14=?"
                  + ",item15=? ,item16=? ,item17=? ,item18=? ,item19=?"
                  + ",item20=? WHERE idMochila=?");
-        while (i < paquetePersonaje.getCantItems()) {
+        for (int i = 0; i < paquetePersonaje.getCantItems(); i++) {
              stActualizarMochila.setInt(i + 1, paquetePersonaje.getItemID(i));
-             i++;
              }
           if (paquetePersonaje.getCantItems() < CANTITEMS) {
                 int itemGanado = new Random().nextInt(
