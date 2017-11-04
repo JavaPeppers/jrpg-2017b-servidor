@@ -30,6 +30,7 @@ import mensajeria.PaqueteUsuario;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.context.internal.ThreadLocalSessionContext;
 
+import dominio.Item;
 
 /**
  * Clase que se encarga de la comunicación con la base de datos.
@@ -483,46 +484,16 @@ public class Conector {
             }     		
      		return false;
     	}
-    
-     public boolean loguearUsuario2(final PaqueteUsuario user) {
-        ResultSet result = null;
-        try {
-            // Busco usuario y contraseña
-            PreparedStatement st = connect
-                 .prepareStatement("SELECT * FROM registro WHERE "
-                        + "usuario = ? AND password = ? ");
-            st.setString(1, user.getUsername());
-            st.setString(2, user.getPassword());
-            result = st.executeQuery();
 
-            // Si existe inicio sesion
-            if (result.next()) {
-            	
-                Servidor.log.append("El usuario " + user.getUsername()
-                + " ha iniciado sesión." + System.lineSeparator());
-                return true;
-            }
-
-            // Si no existe informo y devuelvo false
-            Servidor.log.append("El usuario " + user.getUsername()
-            + " ha realizado un intento fallido de inicio de sesión."
-            + System.lineSeparator());
-            return false;
-
-        } catch (SQLException e) {
-            Servidor.log.append("El usuario " + user.getUsername()
-            + " fallo al iniciar sesión." + System.lineSeparator());
-            return false;
-        }
-
-    }
 
      /**
       * Método que acualiza los datos del personaje en la base de datos.
       * @param paquetePersonaje PaquetePersonaje con los datos del personaje
       */
-     public void actualizarPersonaje(final PaquetePersonaje paquetePersonaje) {
-         try {
+     @SuppressWarnings("deprecation")
+	public void actualizarPersonaje(final PaquetePersonaje paquetePersonaje) {
+        /* THE OLD GOT*/
+          try {
             int i = 2;
             int j = 1;
             PreparedStatement stActualizarPersonaje = connect
@@ -561,6 +532,7 @@ public class Conector {
                    + "FROM mochila WHERE idMochila = ?");
             stDameItemsID.setInt(1, paquetePersonaje.getId());
             ResultSet resultadoItemsID = stDameItemsID.executeQuery();
+            
             PreparedStatement stDatosItem = connect.prepareStatement(
                   "SELECT * FROM item WHERE idItem = ?");
             ResultSet resultadoDatoItem = null;
@@ -592,6 +564,94 @@ public class Conector {
             + paquetePersonaje.getNombre()  + System.lineSeparator());
         }
 
+    	/*	INTENTO - accede a las columnas, intente iterar por las propiedades de la clase y no salio
+    	 * Configuration cfg = new Configuration();
+    		cfg.configure("hibernate.cfg.xml");
+    		SessionFactory factory = cfg.buildSessionFactory();
+    		Session session = factory.openSession();
+
+    		Transaction tx = null;
+
+    		try {
+    			tx = session.beginTransaction();
+    			Query query = session
+    					.createQuery("UPDATE personaje SET fuerza=:fuerza,"
+    			                  + "destreza=:destreza, inteligencia=:inteligencia, saludTope=:saludTope, energiaTope=:energiaTope,"
+    			                  + "experiencia=?, nivel=?, puntosSkills=?, fuerzaSkill=?,"
+    			                  + "inteligenciaSkill=:inteligenciaSkill, destrezaSkill=:destrezaSkill "
+    			                  + "WHERE idPersonaje=:idPersonaje");
+    			// Seteo parametros items
+    			
+    			query.setParameter("fuerza",paquetePersonaje.getFuerza());
+    			query.setParameter("destreza",paquetePersonaje.getDestreza());
+    			query.setParameter("inteligencia",paquetePersonaje.getInteligencia());
+    			query.setParameter("saludTope",paquetePersonaje.getSaludTope());
+    			query.setParameter("energiaTope",paquetePersonaje.getEnergiaTope());
+    			query.setParameter("experiencia",paquetePersonaje.getExperiencia());
+    			query.setParameter("nivel",paquetePersonaje.getNivel());
+    			query.setParameter("puntosSkills",paquetePersonaje.getPuntosSkillsDisponibles());
+    			query.setParameter("fuerzaSkill",paquetePersonaje.getFuerzaSkill());
+    			query.setParameter("inteligenciaSkill",paquetePersonaje.getInteligenciaSkill());
+    			query.setParameter("destrezaSkill",paquetePersonaje.getDestrezaSkill());
+    			query.setParameter("idPersonaje",paquetePersonaje.getId());
+    			    		   			
+    			int result = query.executeUpdate();
+
+    			
+    			Session sessionMochila = factory.openSession();    			
+    			Query queryMochila = sessionMochila.createQuery("FROM mochila WHERE idMochila =:idMochila");
+    			queryMochila.setParameter("idMochila",paquetePersonaje.getId());
+    	           
+    			
+    			
+    			//List<mochila> resultadoItemsID = queryMochila.list();   		
+    			mochila resultadoItemsID = (mochila)queryMochila.getSingleResult();
+    			Session sessionItem = factory.openSession();    			
+    			Query queryitem = sessionItem.createQuery("FROM item WHERE idItem =:idItem");
+
+    			int i = 2;
+    	        int j = 1;
+	            
+	            List<Item>resultadoDatoItem = null;
+	            paquetePersonaje.eliminarItems();
+	           
+    	        while (j <= CANTITEMS) {
+    	        	if (resultadoItemsID.getItem1() != -1) {
+    	                  //if (resultadoItemsID.getInt(i) != -1) {
+    	        		
+    	        		queryitem.setParameter("idItem", resultadoItemsID.getItem1());
+    	                    resultadoDatoItem = queryitem.executeQuery();
+
+    	                    paquetePersonaje.anadirItem(resultadoDatoItem.getInt(
+    	                            "idItem"), resultadoDatoItem.getString("nombre"),
+    	                            resultadoDatoItem.getInt("wereable"),
+    	                            resultadoDatoItem.getInt("bonusSalud"),
+    	                            resultadoDatoItem.getInt("bonusEnergia"),
+    	                            resultadoDatoItem.getInt("bonusFuerza"),
+    	                            resultadoDatoItem.getInt("bonusDestreza"),
+    	                            resultadoDatoItem.getInt("bonusInteligencia"),
+    	                            resultadoDatoItem.getString("foto"),
+    	                            resultadoDatoItem.getString("fotoEquipado"));
+    	                }
+    	                i++;
+    	                j++;
+    	            }
+    			
+    			
+    			tx.commit();
+    		}
+
+    		catch (Exception e) {
+    			if (tx != null)
+    				tx.rollback();
+    			Servidor.log.append("Fallo al intentar actualizar personaje" + System.lineSeparator());
+    			Servidor.log.append(e.getMessage() + System.lineSeparator());
+    		} finally {
+    			session.close();
+    		}
+   
+    		*/
+    		
     }
 
     /**
@@ -894,45 +954,80 @@ public class Conector {
       * Método encargado de actualizar el nivel del personaje.
       * @param paquetePersonaje datos del personaje a actualizar.
       */
-     public void actualizarPersonajeSubioNivel(
-          final PaquetePersonaje paquetePersonaje) {
-         try {
-            PreparedStatement stActualizarPersonaje = connect
-                 .prepareStatement("UPDATE personaje SET fuerza=?,"
-                 + "destreza=?, inteligencia=?, saludTope=?, energiaTope=?,"
-                 + "experiencia=?, nivel=?, puntosSkills=?, fuerzaSkill=?,"
-                 + "inteligenciaSkill=?, destrezaSkill=?"
-                 + " WHERE idPersonaje=?");
+	public void actualizarPersonajeSubioNivel(final PaquetePersonaje paquetePersonaje) {
 
-            stActualizarPersonaje.setInt(PARAM1, paquetePersonaje.getFuerza());
-            stActualizarPersonaje.setInt(PARAM2,
-                  paquetePersonaje.getDestreza());
-            stActualizarPersonaje.setInt(PARAM3,
-                  paquetePersonaje.getInteligencia());
-            stActualizarPersonaje.setInt(PARAM4,
-                  paquetePersonaje.getSaludTope());
-            stActualizarPersonaje.setInt(PARAM5,
-                  paquetePersonaje.getEnergiaTope());
-            stActualizarPersonaje.setInt(PARAM6,
-                  paquetePersonaje.getExperiencia());
-            stActualizarPersonaje.setInt(PARAM7, paquetePersonaje.getNivel());
-            stActualizarPersonaje.setInt(PARAM8,
-                  paquetePersonaje.getPuntosSkillsDisponibles());
-            stActualizarPersonaje.setInt(PARAM9,
-                  paquetePersonaje.getFuerzaSkill());
-            stActualizarPersonaje.setInt(PARAM10,
-                  paquetePersonaje.getInteligenciaSkill());
-            stActualizarPersonaje.setInt(PARAM11,
-                  paquetePersonaje.getDestrezaSkill());
-            stActualizarPersonaje.setInt(PARAM12, paquetePersonaje.getId());
+		/*
+		 * try { PreparedStatement stActualizarPersonaje = connect
+		 * .prepareStatement("UPDATE personaje SET fuerza=?," +
+		 * "destreza=?, inteligencia=?, saludTope=?, energiaTope=?," +
+		 * "experiencia=?, nivel=?, puntosSkills=?, fuerzaSkill=?," +
+		 * "inteligenciaSkill=?, destrezaSkill=?" + " WHERE idPersonaje=?");
+		 * 
+		 * stActualizarPersonaje.setInt(PARAM1, paquetePersonaje.getFuerza());
+		 * stActualizarPersonaje.setInt(PARAM2, paquetePersonaje.getDestreza());
+		 * stActualizarPersonaje.setInt(PARAM3, paquetePersonaje.getInteligencia());
+		 * stActualizarPersonaje.setInt(PARAM4, paquetePersonaje.getSaludTope());
+		 * stActualizarPersonaje.setInt(PARAM5, paquetePersonaje.getEnergiaTope());
+		 * stActualizarPersonaje.setInt(PARAM6, paquetePersonaje.getExperiencia());
+		 * stActualizarPersonaje.setInt(PARAM7, paquetePersonaje.getNivel());
+		 * stActualizarPersonaje.setInt(PARAM8,
+		 * paquetePersonaje.getPuntosSkillsDisponibles());
+		 * stActualizarPersonaje.setInt(PARAM9, paquetePersonaje.getFuerzaSkill());
+		 * stActualizarPersonaje.setInt(PARAM10,
+		 * paquetePersonaje.getInteligenciaSkill());
+		 * stActualizarPersonaje.setInt(PARAM11, paquetePersonaje.getDestrezaSkill());
+		 * stActualizarPersonaje.setInt(PARAM12, paquetePersonaje.getId());
+		 * 
+		 * stActualizarPersonaje.executeUpdate();
+		 * 
+		 * Servidor.log.append("El personaje " + paquetePersonaje.getNombre() +
+		 * " se ha actualizado con éxito." + System.lineSeparator()); } catch
+		 * (SQLException e) {
+		 * Servidor.log.append("Fallo al intentar actualizar el personaje " +
+		 * paquetePersonaje.getNombre() + System.lineSeparator()); }
+		 */
+		Configuration cfg = new Configuration();
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory = cfg.buildSessionFactory();
+		Session session = factory.openSession();
 
-            stActualizarPersonaje.executeUpdate();
+		Transaction tx = null;
 
-            Servidor.log.append("El personaje " + paquetePersonaje.getNombre()
-            + " se ha actualizado con éxito."  + System.lineSeparator());
-         } catch (SQLException e) {
-           Servidor.log.append("Fallo al intentar actualizar el personaje "
-         + paquetePersonaje.getNombre()  + System.lineSeparator());
-         }
+		try {
+			tx = session.beginTransaction();
+			Query query = session.createQuery("UPDATE personaje SET fuerza =:fuerza,"
+					+ "destreza =:destreza, inteligencia =:inteligencia, saludTope =:saludTope, energiaTope =:energiaTope,"
+					+ "experiencia =:experiencia, nivel=:nivel, puntosSkills=:puntosSkill, fuerzaSkill=:fuerzaSkill"
+					+ "inteligenciaSkill=:inteligenciaSkill, destrezaSkill=:destrezaSkill"
+					+ " WHERE idPersonaje=:idPersonaje");
+
+			// Seteo parametros items
+			query.setParameter("fuerza", paquetePersonaje.getFuerza());
+			query.setParameter("destreza", paquetePersonaje.getDestreza());
+			query.setParameter("inteligencia", paquetePersonaje.getInteligencia());
+			query.setParameter("saludTope", paquetePersonaje.getSaludTope());
+			query.setParameter("energiaTope", paquetePersonaje.getEnergiaTope());
+			query.setParameter("experiencia", paquetePersonaje.getExperiencia());
+			query.setParameter("nivel", paquetePersonaje.getNivel());
+			query.setParameter("puntosSkills", paquetePersonaje.getPuntosSkillsDisponibles());
+			query.setParameter("fuerzaSkill", paquetePersonaje.getFuerzaSkill());
+			query.setParameter("inteligenciaSkill", paquetePersonaje.getInteligenciaSkill());
+			query.setParameter("destrezaSkill", paquetePersonaje.getDestrezaSkill());
+			query.setParameter("idPersonaje", paquetePersonaje.getId());
+
+			int result = query.executeUpdate();
+
+			tx.commit();
+		}
+
+		catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			Servidor.log.append("Fallo al intentar actualizar el nivel del personaje" + System.lineSeparator());
+			Servidor.log.append(e.getMessage() + System.lineSeparator());
+		} finally {
+			session.close();
+		}
+    	 
     }
 }
