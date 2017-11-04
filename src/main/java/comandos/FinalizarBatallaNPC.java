@@ -11,9 +11,9 @@ import servidor.Servidor;
  */
 public class FinalizarBatallaNPC extends ComandosServer {
 
-    
+
    /**
-    * Método que ejecuta finalizarBatallaNPC
+    * Método que ejecuta finalizarBatallaNPC.
     */
     @Override
     public void ejecutar() {
@@ -29,5 +29,5 @@ public class FinalizarBatallaNPC extends ComandosServer {
             Servidor.atencionConexiones.notify();
         }
      }
-    
+
 }

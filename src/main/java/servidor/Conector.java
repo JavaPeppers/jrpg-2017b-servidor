@@ -140,13 +140,13 @@ public class Conector {
                 + " se ha registrado."
                 + System.lineSeparator());
                 return true;
-        } 
-        
+        }
+
             Servidor.log.append("El usuario "
         + user.getUsername()
         + " ya se encuentra en uso." + System.lineSeparator());
                 return false;
-           
+
         } catch (SQLException ex) {
             Servidor.log.append("Error al intentar registrar el usuario "
             + user.getUsername() + System.lineSeparator());
@@ -229,7 +229,7 @@ public class Conector {
                     + paquetePersonaje.getId() + System.lineSeparator());
                     return true;
                 }
-                
+
                 Servidor.log.append("Error al registrar la mochila y"
                       + "el inventario del usuario "
                       + paqueteUsuario.getUsername()
@@ -543,7 +543,7 @@ public class Conector {
                    + ",item10=? ,item11=? ,item12=? ,item13=? ,item14=?"
                    + ",item15=?,item16=? ,item17=? ,item18=? ,item19=?"
                    + ",item20=? WHERE idMochila=?");
-           for(int i = 0;i < paquetePersonaje.getCantItems(); i++) {
+           for (int i = 0; i < paquetePersonaje.getCantItems(); i++) {
                stActualizarMochila.setInt(i + 1, paquetePersonaje.getItemID(i));
            }
            for (int j = paquetePersonaje.getCantItems();

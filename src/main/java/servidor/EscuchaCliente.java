@@ -98,7 +98,7 @@ public class EscuchaCliente extends Thread {
         paquetePersonaje = new PaquetePersonaje();
     }
 
-    
+
     /**
      * Método encargado de escuchar los comandos del cliente.
      */
@@ -265,11 +265,11 @@ public class EscuchaCliente extends Thread {
 
     /**
      * Método que seta el paquete de movimientos.
-     * @param paqueteDeMovimiento
+     * @param paqueteDeMovimientoParam se setea el paquete de movimiento.
      */
     public void setPaqueteDeMovimiento(
-        final PaqueteDeMovimientos paqueteDeMovimiento) {
-    this.paqueteDeMovimiento = paqueteDeMovimiento;
+        final PaqueteDeMovimientos paqueteDeMovimientoParam) {
+    this.paqueteDeMovimiento = paqueteDeMovimientoParam;
     }
 
     /**
@@ -314,7 +314,7 @@ public class EscuchaCliente extends Thread {
         return paqueteUsuario;
     }
 
-    
+
     /**
      * Método que setea el paqueteUsuario.
      * @param paqueteUsuario paq usuario.

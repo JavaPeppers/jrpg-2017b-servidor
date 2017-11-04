@@ -11,7 +11,7 @@ import servidor.Conector;
 import servidor.Servidor;
 
 public class TestConector {
-	
+
 	private String getRandomString() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
@@ -86,7 +86,7 @@ public class TestConector {
 
 		conector.registrarUsuario(pu);
 		conector.registrarPersonaje(pp, pu);
-		
+
 		pp = conector.getPersonaje(pu);
 
 		Assert.assertEquals(randomero, pp.getNombre());

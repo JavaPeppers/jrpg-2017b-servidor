@@ -16,9 +16,10 @@ public abstract class ComandosServer extends Comando {
 
     /**
      * Método que recibe el escuchaCliente.
+     * @param escuchaClienteParam se setea la escucha cliente.
      */
-    public void setEscuchaCliente(EscuchaCliente escuchaCliente) {
-        this.escuchaCliente = escuchaCliente;
+    public void setEscuchaCliente(EscuchaCliente escuchaClienteParam) {
+        this.escuchaCliente = escuchaClienteParam;
     }
 
 }

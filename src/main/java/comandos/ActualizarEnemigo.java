@@ -59,8 +59,8 @@ public class ActualizarEnemigo extends ComandosServer {
 			Servidor.getEnemigos().get(idEnemigo).setEstado(Estado.ESTADOJUEGO);
 			escuchaCliente.setPaqueteEnemigo(Servidor.getEnemigos().get(idEnemigo));
 			escuchaCliente.getPaqueteEnemigo().setComando(Comando.ACTUALIZARENEMIGO);
-			for(EscuchaCliente conectado: Servidor.getClientesConectados()) {
-				if(conectado.getPaquetePersonaje().getMapa() == escuchaCliente.getPaqueteEnemigo().getMapa()) {
+			for (EscuchaCliente conectado: Servidor.getClientesConectados()) {
+				if (conectado.getPaquetePersonaje().getMapa() == escuchaCliente.getPaqueteEnemigo().getMapa()) {
 					try {
 						conectado.getSalida().writeObject(
 			                    getGson().toJson(escuchaCliente.getPaqueteEnemigo()));
@@ -74,5 +74,5 @@ public class ActualizarEnemigo extends ComandosServer {
 
 		}
 	}
-	
+
 }
