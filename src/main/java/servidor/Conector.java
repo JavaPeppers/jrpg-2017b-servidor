@@ -20,12 +20,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-
-
+import hibernateUtil.HibernateUtil;
+import inventario.Inventario;
 import mensajeria.PaquetePersonaje;
 import mensajeria.PaqueteUsuario;
 
 import org.hibernate.cfg.Configuration;
+import org.hibernate.context.internal.ThreadLocalSessionContext;
 
 /**
  * Clase que se encarga de la comunicación con la base de datos.
@@ -127,6 +128,8 @@ public class Conector {
                  .log(Level.SEVERE, null, ex);
          }
      }
+    
+   
 
      /**
      * Método encargado de registrar el usuario en la base de datos.
@@ -135,12 +138,16 @@ public class Conector {
      */
     
      
+     
+    
      public boolean registrarUsuario(PaqueteUsuario user) {
  		//Preparo sesion de hibernate
  		Configuration cfg = new Configuration();
  		cfg.configure("hibernate.cfg.xml");
  		SessionFactory factory = cfg.buildSessionFactory();
  		Session session = factory.openSession();
+ 		
+ 		HibernateUtil.openThreadSession(session);
  		
  		//Preparo el criteria
  		CriteriaBuilder cBuilder = session.getCriteriaBuilder();
@@ -164,20 +171,33 @@ public class Conector {
  					transaccion.rollback();
  				e.printStackTrace();
  				
- 				session.close();
+ 				HibernateUtil.closeThreadSession(session, factory);
+ 				
+ 				
+ 				
+ 				
  				
  				Servidor.log.append("Eror al intentar registrar el usuario " + user.getUsername() + System.lineSeparator());
  				return false;
  			}
  		} else {
  			//Si ya existe un usuario con ese nombre, cierro sesion, escribo el log y me voy
- 			session.close();
+ 			HibernateUtil.closeThreadSession(session, factory);	
+ 			
+ 			
+ 			
+ 			
  			
  			Servidor.log.append("El usuario " + user.getUsername() + " ya se encuentra en uso." + System.lineSeparator());
  			return false;
  		}
  		
- 		session.close();
+ 		
+ 		HibernateUtil.closeThreadSession(session, factory);
+ 		
+ 		
+ 		
+ 		
  		
  		Servidor.log.append("El usuario " + user.getUsername() + " se ha registrado." + System.lineSeparator());
  		return true;
@@ -191,16 +211,19 @@ public class Conector {
   		SessionFactory factory = cfg.buildSessionFactory();
   		Session session = factory.openSession();
     	
+  		HibernateUtil.openThreadSession(session);
+  		
     	//Seteo stats del personaje
     	pj.setAlianza(-1);
     	pj.setExperiencia(0);
-    	pj.setInventario(-1);
-    	pj.setMochila(-1);
+    	pj.setidInventario(pj.getId());
+    	pj.setidMochila(pj.getId());
     	pj.setNivel(1);
     	 
     	Transaction transaccion = session.beginTransaction();
 		try{
 			pj.setId((Integer) session.save(pj));
+			
 			transaccion.commit();
 			System.out.println(pj.getId());
 			user.setIdPj(pj.getId());
@@ -211,10 +234,19 @@ public class Conector {
 			if (this.registrarInventarioMochila(pj.getId())) {
 				Servidor.log.append("El usuario " + user.getUsername() + " ha creado el personaje "
 						+ pj.getId() + System.lineSeparator());
-				session.close();
+				
+				HibernateUtil.closeThreadSession(session, factory);
+				
+				
+				
 				return true;
 			} else {
+				
+				HibernateUtil.closeThreadSession(session, factory);
+				
 				session.close();
+				factory.close();
+				
 				Servidor.log.append("Error al registrar la mochila y el inventario del usuario " + user.getUsername() + " con el personaje" + pj.getId() + System.lineSeparator());
 				return false;
 			}
@@ -223,7 +255,10 @@ public class Conector {
 			if (transaccion != null)
 				transaccion.rollback();
 			e.printStackTrace();
-			session.close();
+			
+			HibernateUtil.closeThreadSession(session, factory);
+			
+			
 			Servidor.log.append(
 					"Error al intentar crear el personaje " + pj.getNombre() + System.lineSeparator());
 			return false;
@@ -237,6 +272,8 @@ public class Conector {
   		SessionFactory factory = cfg.buildSessionFactory();
   		Session session = factory.openSession();
   		
+  		HibernateUtil.openThreadSession(session);
+  		
   		//Preparo el criteria
   		CriteriaBuilder cBuilder = session.getCriteriaBuilder();
   		CriteriaQuery<PaqueteUsuario> cQuery = cBuilder.createQuery(PaqueteUsuario.class);
@@ -248,7 +285,9 @@ public class Conector {
   		session.update(user);
   		transaccion.commit();
   		
-  		session.close();
+  		HibernateUtil.closeThreadSession(session, factory);
+  		
+  		
   		
      }
 
@@ -269,6 +308,97 @@ public class Conector {
      * @param idInventarioMochila identificador del inventario
      * @return boolean
      */
+    public boolean registrarInventarioMochila2(final int idInventarioMochila) {
+    	//Preparo sesion de hibernate
+    	Configuration cfg = new Configuration();
+    	cfg.configure("hibernate.cfg.xml");
+    	SessionFactory factory = cfg.buildSessionFactory();
+    	Session session = factory.openSession();
+  		
+    	HibernateUtil.openThreadSession(session);
+  		
+    	Inv inv = new Inv();
+    	inv.setaccesorio(-1);
+    	inv.setcabeza(-1);
+    	inv.setidInventario(idInventarioMochila);
+    	inv.setmanos2(-1);
+    	inv.setmanos1(-1);
+    	inv.setpecho(-1);
+    	inv.setaccesorio(-1);
+    	inv.setpie(-1);
+    	
+    	
+    	
+    	//Preparo el criteria
+    	CriteriaBuilder cBuilder = session.getCriteriaBuilder();
+    	CriteriaQuery<Inv> cQuery = cBuilder.createQuery(Inv.class);
+    	Root<Inv> root = cQuery.from(Inv.class);
+  		
+  		
+    	
+    	
+  		//Actualizo el usuario
+  		Transaction transaccion = session.beginTransaction();
+  		session.save(inv);
+  		transaccion.commit();
+  		
+  		HibernateUtil.closeThreadSession(session, factory);
+  		
+  		Configuration cfg2 = new Configuration();
+    	cfg2.configure("hibernate.cfg.xml");
+    	SessionFactory factory2 = cfg2.buildSessionFactory();
+    	Session session2 = factory2.openSession();
+  		
+    	HibernateUtil.openThreadSession(session2);
+  		
+    	mochila mochila = new mochila();
+    	mochila.setIdMochila(idInventarioMochila);
+    	mochila.setItem1(-1);
+    	mochila.setItem2(-1);
+    	mochila.setItem3(-1);
+    	mochila.setItem4(-1);
+    	mochila.setItem5(-1);
+    	mochila.setItem6(-1);
+    	mochila.setItem7(-1);
+    	mochila.setItem8(-1);
+    	mochila.setItem9(-1);
+    	mochila.setItem10(-1);
+    	mochila.setItem11(-1);
+    	mochila.setItem12(-1);
+    	mochila.setItem13(-1);
+    	mochila.setItem14(-1);
+    	mochila.setItem15(-1);
+    	mochila.setItem16(-1);
+    	mochila.setItem17(-1);
+    	mochila.setItem18(-1);
+    	mochila.setItem19(-1);
+    	mochila.setItem20(-1);
+    	
+    	
+    	
+    	//Preparo el criteria
+    	CriteriaBuilder cBuilder2 = session2.getCriteriaBuilder();
+    	CriteriaQuery<mochila> cQuery2 = cBuilder2.createQuery(mochila.class);
+    	Root<mochila> root2 = cQuery2.from(mochila.class);
+  		
+  		
+    	
+    	
+  		//Actualizo el usuario
+  		Transaction transaccion2 = session2.beginTransaction();
+  		session2.save(mochila);
+  		transaccion2.commit();
+  		
+  		HibernateUtil.closeThreadSession(session2, factory2);
+  		
+  		return true;
+  		
+  		
+  		
+     }
+
+    
+     
     public boolean registrarInventarioMochila(final int idInventarioMochila) {
         try {
             // Preparo la consulta para el registro el inventario en la base de
@@ -317,7 +447,38 @@ public class Conector {
      * @param user PaqueteUsuario con los datos del usuario a loguear
      * @return boolean Resultado del log
      */
-     public boolean loguearUsuario(final PaqueteUsuario user) {
+    	public boolean loguearUsuario(final PaqueteUsuario user) {
+    		//Preparo sesion de hibernate
+     		Configuration cfg = new Configuration();
+     		cfg.configure("hibernate.cfg.xml");
+     		SessionFactory factory = cfg.buildSessionFactory();
+     		Session session = factory.openSession();
+     		
+     		HibernateUtil.openThreadSession(session);
+     		
+     		
+     		
+     		//Preparo el criteria
+     		CriteriaBuilder cBuilder = session.getCriteriaBuilder();
+     		CriteriaQuery<PaqueteUsuario> cQuery = cBuilder.createQuery(PaqueteUsuario.class);
+     		Root<PaqueteUsuario> root = cQuery.from(PaqueteUsuario.class);
+     		
+     		
+     		//Ejecuto la query buscando usuarios con ese nombre
+     		cQuery.select(root).where(cBuilder.equal(root.get("username"), user.getUsername()));
+     		
+     		//Si no existen usuarios con ese nombre
+     		if(!session.createQuery(cQuery).getResultList().isEmpty() && 
+     				session.createQuery(cQuery).getResultList().remove(0).getPassword() == user.getPassword()) {
+     			System.out.println("ACAAAAAAAAAAAA: ");
+     			Servidor.log.append("El usuario " + user.getUsername()
+                + " ha iniciado sesión." + System.lineSeparator());
+                return true;
+     		}
+     		return false;
+    	}
+    
+     public boolean loguearUsuario2(final PaqueteUsuario user) {
         ResultSet result = null;
         try {
             // Busco usuario y contraseña
