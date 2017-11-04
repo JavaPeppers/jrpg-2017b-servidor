@@ -12,6 +12,12 @@ import servidor.Servidor;
  */
 public class SetEnemigos extends ComandosServer {
 
+    /** Variable que indica el id del ultimo enemigo en el vector. **/
+    private static final int FIN_ENEMIGO = -20;
+
+    /** Variable que indica el id del primer enemigo en el vector. **/
+    private static final int INI_ENEMIGO = -10;
+
     /**
      * Método que ubica los NPC y los envía a todos los clientes.
     */
@@ -23,14 +29,21 @@ public class SetEnemigos extends ComandosServer {
         try {
             PaqueteDeEnemigos packEnemigos = new PaqueteDeEnemigos();
             int aux = escuchaCliente.getPaquetePersonaje().getMapa();
-            if(aux == 1)
-	            for(int i = -1; i>=-10; i--)
-	            	packEnemigos.getEnemigos().put(i, Servidor.getEnemigos().get(i));
-            if(aux == 2)
-            	for(int i = -11; i>=-20; i--)
-            		packEnemigos.getEnemigos().put(i, Servidor.getEnemigos().get(i));
+            if (aux == 1) {
+                for (int i = -1; i >= INI_ENEMIGO; i--) {
+                     packEnemigos.getEnemigos()
+                     .put(i, Servidor.getEnemigos().get(i));
+                }
+            }
+            if (aux == 2) {
+                for (int i = (INI_ENEMIGO - 1); i >= FIN_ENEMIGO; i--) {
+                    packEnemigos.getEnemigos()
+                    .put(i, Servidor.getEnemigos().get(i));
+                }
+            }
             packEnemigos.setComando(Comando.SETENEMIGOS);
-            escuchaCliente.getSalida().writeObject(getGson().toJson(packEnemigos));
+            escuchaCliente.getSalida().writeObject(
+                    getGson().toJson(packEnemigos));
         } catch (IOException e) {
             Servidor.log.append("Error al setear a los enemigos en el mapa.\n");
        }

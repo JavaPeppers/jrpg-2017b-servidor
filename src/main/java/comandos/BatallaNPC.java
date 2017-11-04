@@ -39,27 +39,32 @@ public class BatallaNPC extends ComandosServer {
             escuchaCliente.getPaqueteBatallaNPC().setMiTurno(true);
             escuchaCliente.getSalida().writeObject(getGson().toJson(
                  escuchaCliente.getPaqueteBatallaNPC()));
-            
-            //LO QUE HAGO A PARTIR DE ACA ES DESAPARECERLE EL ENEMIGO A LOS OTROS CLIENTES
-            //El otro cliente desaparece porque atencionConexiones 
+
+            //LO QUE HAGO A PARTIR DE ACA ES DESAPARECERLE
+            //EL ENEMIGO A LOS OTROS CLIENTES
+            //El otro cliente desaparece porque atencionConexiones
             //le reenvia todo el tiempo el paquetePersonajes
-            int idEnemigo = escuchaCliente.getPaqueteBatallaNPC().getIdEnemigo();
-            
-            PaqueteEnemigo paqueteEnemigo = Servidor.getEnemigos().get(idEnemigo);
+            int idEnemigo = escuchaCliente.
+                 getPaqueteBatallaNPC().getIdEnemigo();
+
+            PaqueteEnemigo paqueteEnemigo =
+                  Servidor.getEnemigos().get(idEnemigo);
             paqueteEnemigo.setComando(Comando.DESAPARECERENEMIGO);
-            
+
             for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
-            	if(conectado.getPaquetePersonaje().getMapa() == paqueteEnemigo.getMapa()) {
-	                try {
-	                    conectado.getSalida().writeObject(getGson().toJson(paqueteEnemigo));
-	                } catch (IOException e) {
-	                  Servidor.log.append("Falló al intentar enviar"
-	                  + "DesaparecerEnemigo a:"
-	                  + conectado.getPaquetePersonaje().getId() + "\n");
-	                }
-            	}
-        	}
-            
+                if (conectado.getPaquetePersonaje().getMapa()
+                   == paqueteEnemigo.getMapa()) {
+                    try {
+                        conectado.getSalida().writeObject(getGson()
+                            .toJson(paqueteEnemigo));
+                     } catch (IOException e) {
+                      Servidor.log.append("Falló al intentar enviar"
+                      + "DesaparecerEnemigo a:"
+                      + conectado.getPaquetePersonaje().getId() + "\n");
+                    }
+                }
+           }
+
 
         } catch (Exception e) {
              Servidor.log.append("Falló al intentar enviar Batalla NPC \n");
