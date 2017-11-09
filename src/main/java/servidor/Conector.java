@@ -995,11 +995,11 @@ public class Conector {
 
 		try {
 			tx = session.beginTransaction();
-			Query query = session.createQuery("UPDATE personaje SET fuerza =:fuerza,"
-					+ "destreza =:destreza, inteligencia =:inteligencia, saludTope =:saludTope, energiaTope =:energiaTope,"
-					+ "experiencia =:experiencia, nivel=:nivel, puntosSkills=:puntosSkill, fuerzaSkill=:fuerzaSkill"
-					+ "inteligenciaSkill=:inteligenciaSkill, destrezaSkill=:destrezaSkill"
-					+ " WHERE idPersonaje=:idPersonaje");
+			Query query = session.createQuery("UPDATE personaje SET fuerza = :fuerza,"
+					+ "destreza = :destreza, inteligencia = :inteligencia, saludTope = :saludTope, energiaTope = :energiaTope,"
+					+ "experiencia = :experiencia, nivel= :nivel, puntosSkills= :puntosSkill, fuerzaSkill= :fuerzaSkill,"
+					+ "inteligenciaSkill= :inteligenciaSkill, destrezaSkill= :destrezaSkill"
+					+ " WHERE idPersonaje= :idPersonaje");
 
 			// Seteo parametros items
 			query.setParameter("fuerza", paquetePersonaje.getFuerza());
