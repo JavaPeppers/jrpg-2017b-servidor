@@ -1,6 +1,6 @@
 package servidor;
 
-public class mochila {
+public class Mochila {
 	private int idMochila;
 	private int item1;
 	private int item2;
@@ -23,7 +23,7 @@ public class mochila {
 	private int item19;
 	private int item20;
 
-	public mochila() {
+	public Mochila() {
 
 	}
 
