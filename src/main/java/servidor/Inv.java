@@ -12,6 +12,17 @@ public class Inv {
 	public Inv() {
 		
 	}
+	
+	public Inv(int idInventario, int manos1, int manos2, int pie, int cabeza, int pecho, int accesorio) {
+		super();
+		this.idInventario = idInventario;
+		this.manos1 = manos1;
+		this.manos2 = manos2;
+		this.pie = pie;
+		this.cabeza = cabeza;
+		this.pecho = pecho;
+		this.accesorio = accesorio;
+	}
 
 	public int getidInventario() {
 		return idInventario;

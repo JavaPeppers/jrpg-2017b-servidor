@@ -307,48 +307,43 @@ public class Conector {
      * @param idInventarioMochila identificador del inventario
      * @return boolean
      */
-     public boolean registrarInventarioMochila(final int idInventarioMochila) {
-        try {
-            // Preparo la consulta para el registro el inventario en la base de
-            // datos
-            PreparedStatement stRegistrarInventario = connect.prepareStatement(
-                  "INSERT INTO inventario(idInventario,manos1,manos2,pie,"
-                  + "cabeza,pecho,accesorio) VALUES (?,-1,-1,-1,-1,-1,-1)");
-            stRegistrarInventario.setInt(1, idInventarioMochila);
+	public boolean registrarInventarioMochila(final int idInventarioMochila) {
+		Configuration cfg = new Configuration();
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory = cfg.buildSessionFactory();
+		Session session = factory.openSession();
 
-            // Preparo la consulta para el registro la mochila en la base de
-            // datos
-            PreparedStatement stRegistrarMochila = connect.prepareStatement(
-                  "INSERT INTO Mochila(idMochila,item1,item2,item3,item4,item5,"
-                + "item6,item7,item8,item9,item10,item11,item12,item13,item14,"
-                + "item15,item16,item17,item18,item19,item20)"
-                + "VALUES(?,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,"
-                + "-1,-1,-1,-1,-1,-1,-1)");
-            stRegistrarMochila.setInt(1, idInventarioMochila);
+		Transaction tx = null;
 
-            // Registro inventario y mochila
-            stRegistrarInventario.execute();
-            stRegistrarMochila.execute();
+		try {
+			// Preparo la consulta para el registro el inventario en la base de
+			// datos
+			Inv inventario = new Inv(idInventarioMochila, -1, -1, -1, -1, -1, -1);
+			session.save(inventario);
 
-            // Le asigno el inventario y la mochila al personaje
-            PreparedStatement stAsignarPersonaje = connect
-                 .prepareStatement("UPDATE personaje SET idInventario=?,"
-                 + "idMochila=? WHERE idPersonaje=?");
-            stAsignarPersonaje.setInt(PARAM1, idInventarioMochila);
-            stAsignarPersonaje.setInt(PARAM2, idInventarioMochila);
-            stAsignarPersonaje.setInt(PARAM3, idInventarioMochila);
-            stAsignarPersonaje.execute();
+			// Registro inventario y mochila
+			Session sessionMochila = factory.openSession();
+			Mochila bag = new Mochila(idInventarioMochila, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+					-1, -1, -1, -1, -1);
 
-            Servidor.log.append("Se ha registrado el inventario de "
-            + idInventarioMochila + System.lineSeparator());
-            return true;
+			session.save(bag);
 
-         } catch (SQLException e) {
-             Servidor.log.append("Error al registrar el inventario de "
-         + idInventarioMochila + System.lineSeparator());
-           return false;
-        }
-    }
+			Query query = session.createQuery("UPDATE PaquetePersonaje SET idInventario= :idInventario,"
+					+ "idMochila= :idMochila WHERE idPersonaje= :idPersonaje");
+
+			query.setParameter("idInventario", idInventarioMochila);
+			query.setParameter("idMochila", idInventarioMochila);
+			query.setParameter("idPersonaje", idInventarioMochila);
+			int result = query.executeUpdate();
+
+			Servidor.log.append("Se ha registrado el inventario de " + idInventarioMochila + System.lineSeparator());
+			return true;
+
+		} catch (HibernateException e) {
+			Servidor.log.append("Error al registrar el inventario de " + idInventarioMochila + System.lineSeparator());
+			return false;
+		}
+	}
 
 	/**
 	 * Método que se encarga de loguear al usuario.
@@ -362,9 +357,7 @@ public class Conector {
 		Configuration cfg = new Configuration();
 		cfg.configure("hibernate.cfg.xml");
 		SessionFactory factory = cfg.buildSessionFactory();
-		Session session = factory.openSession();
-
-		HibernateUtil.openThreadSession(session);
+		Session session = factory.openSession();		
 
 		// Preparo el criteria
 		CriteriaBuilder cBuilder = session.getCriteriaBuilder();
@@ -453,7 +446,8 @@ public class Conector {
 		cfg.configure("hibernate.cfg.xml");
 		SessionFactory factory = cfg.buildSessionFactory();
 		Session session = factory.openSession();
-
+		Session sessionMochila = factory.openSession();
+		
 		Transaction tx = null;
 
 		try {
@@ -479,7 +473,7 @@ public class Conector {
 
 			int result = query.executeUpdate();
 
-			Session sessionMochila = factory.openSession();
+			
 			Query queryMochila = sessionMochila.createQuery("FROM Mochila WHERE idMochila =:idMochila");
 			queryMochila.setParameter("idMochila", paquetePersonaje.getId());
 
@@ -520,6 +514,7 @@ public class Conector {
 			Servidor.log.append(e.getMessage() + System.lineSeparator());
 		} finally {
 			session.close();
+			sessionMochila.close();
 		}
 
 	}

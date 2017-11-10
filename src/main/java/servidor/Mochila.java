@@ -265,4 +265,31 @@ public class Mochila {
 		return -1;
 	}
 
+	public Mochila(int idMochila, int item1, int item2, int item3, int item4, int item5, int item6, int item7,
+			int item8, int item9, int item10, int item11, int item12, int item13, int item14, int item15, int item16,
+			int item17, int item18, int item19, int item20) {
+		super();
+		this.idMochila = idMochila;
+		this.item1 = item1;
+		this.item2 = item2;
+		this.item3 = item3;
+		this.item4 = item4;
+		this.item5 = item5;
+		this.item6 = item6;
+		this.item7 = item7;
+		this.item8 = item8;
+		this.item9 = item9;
+		this.item10 = item10;
+		this.item11 = item11;
+		this.item12 = item12;
+		this.item13 = item13;
+		this.item14 = item14;
+		this.item15 = item15;
+		this.item16 = item16;
+		this.item17 = item17;
+		this.item18 = item18;
+		this.item19 = item19;
+		this.item20 = item20;
+	}
+
 }
