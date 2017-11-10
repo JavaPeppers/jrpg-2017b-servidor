@@ -337,12 +337,21 @@ public class Conector {
 			int result = query.executeUpdate();
 
 			Servidor.log.append("Se ha registrado el inventario de " + idInventarioMochila + System.lineSeparator());
+
+			tx.commit();
 			return true;
 
-		} catch (HibernateException e) {
-			Servidor.log.append("Error al registrar el inventario de " + idInventarioMochila + System.lineSeparator());
-			return false;
 		}
+
+		catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			Servidor.log.append("Fallo al intentar actualizar personaje" + System.lineSeparator());
+			Servidor.log.append(e.getMessage() + System.lineSeparator());
+		} finally {
+			session.close();
+		}
+		return false;
 	}
 
 	/**
