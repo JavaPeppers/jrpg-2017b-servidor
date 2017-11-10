@@ -37,6 +37,12 @@ import dominio.Item;
  */
 public class Conector {
 	
+	/*TODO:
+	 * 1 - ver los atributos que agregamos asi nomas, idMochila, etc
+	 * 2 - Sumar los 3 metodos que faltan
+	 * 3 - eliminar jdbc
+	 * */
+	
 	
     /** url de la base de datos. **/
     private String url = "primeraBase.bd";
@@ -215,7 +221,7 @@ public class Conector {
   		SessionFactory factory = cfg.buildSessionFactory();
   		Session session = factory.openSession();
     	
-  		HibernateUtil.openThreadSession(session);
+  		//HibernateUtil.openThreadSession(session);
   		
     	//Seteo stats del personaje
     	pj.setAlianza(-1);
@@ -490,169 +496,137 @@ public class Conector {
       * Método que acualiza los datos del personaje en la base de datos.
       * @param paquetePersonaje PaquetePersonaje con los datos del personaje
       */
-     @SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation")
 	public void actualizarPersonaje(final PaquetePersonaje paquetePersonaje) {
-        /* THE OLD GOT*/
-          try {
-            int i = 2;
-            int j = 1;
-            PreparedStatement stActualizarPersonaje = connect
-                  .prepareStatement("UPDATE personaje SET fuerza=?,"
-                  + "destreza=?, inteligencia=?, saludTope=?, energiaTope=?,"
-                  + "experiencia=?, nivel=?, puntosSkills=?, fuerzaSkill=?,"
-                  + "inteligenciaSkill=?, destrezaSkill=? "
-                  + "WHERE idPersonaje=?");
+		/* THE OLD GOT */
+		/*
+		 * try { int i = 2; int j = 1; PreparedStatement stActualizarPersonaje = connect
+		 * .prepareStatement("UPDATE personaje SET fuerza=?," +
+		 * "destreza=?, inteligencia=?, saludTope=?, energiaTope=?," +
+		 * "experiencia=?, nivel=?, puntosSkills=?, fuerzaSkill=?," +
+		 * "inteligenciaSkill=?, destrezaSkill=? " + "WHERE idPersonaje=?");
+		 * 
+		 * stActualizarPersonaje.setInt(PARAM1, paquetePersonaje.getFuerza());
+		 * stActualizarPersonaje.setInt(PARAM2, paquetePersonaje.getDestreza());
+		 * stActualizarPersonaje.setInt(PARAM3, paquetePersonaje.getInteligencia());
+		 * stActualizarPersonaje.setInt(PARAM4, paquetePersonaje.getSaludTope());
+		 * stActualizarPersonaje.setInt(PARAM5, paquetePersonaje.getEnergiaTope());
+		 * stActualizarPersonaje.setInt(PARAM6, paquetePersonaje.getExperiencia());
+		 * stActualizarPersonaje.setInt(PARAM7, paquetePersonaje.getNivel());
+		 * stActualizarPersonaje.setInt(PARAM8,
+		 * paquetePersonaje.getPuntosSkillsDisponibles());
+		 * stActualizarPersonaje.setInt(PARAM9, paquetePersonaje.getFuerzaSkill());
+		 * stActualizarPersonaje.setInt(PARAM10,
+		 * paquetePersonaje.getInteligenciaSkill());
+		 * stActualizarPersonaje.setInt(PARAM11, paquetePersonaje.getDestrezaSkill());
+		 * stActualizarPersonaje.setInt(PARAM12, paquetePersonaje.getId());
+		 * stActualizarPersonaje.executeUpdate();
+		 * 
+		 * 
+		 * PreparedStatement stDameItemsID = connect.prepareStatement("SELECT * " +
+		 * "FROM mochila WHERE idMochila = ?"); stDameItemsID.setInt(1,
+		 * paquetePersonaje.getId()); ResultSet resultadoItemsID =
+		 * stDameItemsID.executeQuery();
+		 * 
+		 * PreparedStatement stDatosItem = connect.prepareStatement(
+		 * "SELECT * FROM item WHERE idItem = ?"); ResultSet resultadoDatoItem = null;
+		 * paquetePersonaje.eliminarItems();
+		 * 
+		 * while (j <= CANTITEMS) { if (resultadoItemsID.getInt(i) != -1) {
+		 * stDatosItem.setInt(1, resultadoItemsID.getInt(i)); resultadoDatoItem =
+		 * stDatosItem.executeQuery();
+		 * 
+		 * paquetePersonaje.anadirItem(resultadoDatoItem.getInt( "idItem"),
+		 * resultadoDatoItem.getString("nombre"), resultadoDatoItem.getInt("wereable"),
+		 * resultadoDatoItem.getInt("bonusSalud"),
+		 * resultadoDatoItem.getInt("bonusEnergia"),
+		 * resultadoDatoItem.getInt("bonusFuerza"),
+		 * resultadoDatoItem.getInt("bonusDestreza"),
+		 * resultadoDatoItem.getInt("bonusInteligencia"),
+		 * resultadoDatoItem.getString("foto"),
+		 * resultadoDatoItem.getString("fotoEquipado")); } i++; j++; }
+		 * Servidor.log.append("El personaje " + paquetePersonaje.getNombre() +
+		 * " se ha actualizado con éxito." + System.lineSeparator()); } catch
+		 * (SQLException e) {
+		 * Servidor.log.append("Fallo al intentar actualizar el personaje " +
+		 * paquetePersonaje.getNombre() + System.lineSeparator()); }
+		 */
+		// INTENTO - accede a las columnas, intente iterar por las propiedades de la
+		// clase y no salio
+		Configuration cfg = new Configuration();
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory = cfg.buildSessionFactory();
+		Session session = factory.openSession();
 
-            stActualizarPersonaje.setInt(PARAM1, paquetePersonaje.getFuerza());
-            stActualizarPersonaje.setInt(PARAM2,
-                  paquetePersonaje.getDestreza());
-            stActualizarPersonaje.setInt(PARAM3,
-                  paquetePersonaje.getInteligencia());
-            stActualizarPersonaje.setInt(PARAM4,
-                  paquetePersonaje.getSaludTope());
-            stActualizarPersonaje.setInt(PARAM5,
-                  paquetePersonaje.getEnergiaTope());
-            stActualizarPersonaje.setInt(PARAM6,
-                  paquetePersonaje.getExperiencia());
-            stActualizarPersonaje.setInt(PARAM7, paquetePersonaje.getNivel());
-            stActualizarPersonaje.setInt(PARAM8,
-                  paquetePersonaje.getPuntosSkillsDisponibles());
-            stActualizarPersonaje.setInt(PARAM9,
-            paquetePersonaje.getFuerzaSkill());
-            stActualizarPersonaje.setInt(PARAM10,
-                 paquetePersonaje.getInteligenciaSkill());
-            stActualizarPersonaje.setInt(PARAM11,
-                 paquetePersonaje.getDestrezaSkill());
-            stActualizarPersonaje.setInt(PARAM12, paquetePersonaje.getId());
-            stActualizarPersonaje.executeUpdate();
+		Transaction tx = null;
 
+		try {
+			tx = session.beginTransaction();
+			Query query = session.createQuery("UPDATE personaje SET fuerza=:fuerza,"
+					+ "destreza=:destreza, inteligencia=:inteligencia, saludTope=:saludTope, energiaTope=:energiaTope,"
+					+ "experiencia=?, nivel=?, puntosSkills=?, fuerzaSkill=?,"
+					+ "inteligenciaSkill=:inteligenciaSkill, destrezaSkill=:destrezaSkill "
+					+ "WHERE idPersonaje=:idPersonaje");
 
-            PreparedStatement stDameItemsID
-            = connect.prepareStatement("SELECT * "
-                   + "FROM mochila WHERE idMochila = ?");
-            stDameItemsID.setInt(1, paquetePersonaje.getId());
-            ResultSet resultadoItemsID = stDameItemsID.executeQuery();
-            
-            PreparedStatement stDatosItem = connect.prepareStatement(
-                  "SELECT * FROM item WHERE idItem = ?");
-            ResultSet resultadoDatoItem = null;
-            paquetePersonaje.eliminarItems();
+			query.setParameter("fuerza", paquetePersonaje.getFuerza());
+			query.setParameter("destreza", paquetePersonaje.getDestreza());
+			query.setParameter("inteligencia", paquetePersonaje.getInteligencia());
+			query.setParameter("saludTope", paquetePersonaje.getSaludTope());
+			query.setParameter("energiaTope", paquetePersonaje.getEnergiaTope());
+			query.setParameter("experiencia", paquetePersonaje.getExperiencia());
+			query.setParameter("nivel", paquetePersonaje.getNivel());
+			query.setParameter("puntosSkills", paquetePersonaje.getPuntosSkillsDisponibles());
+			query.setParameter("fuerzaSkill", paquetePersonaje.getFuerzaSkill());
+			query.setParameter("inteligenciaSkill", paquetePersonaje.getInteligenciaSkill());
+			query.setParameter("destrezaSkill", paquetePersonaje.getDestrezaSkill());
+			query.setParameter("idPersonaje", paquetePersonaje.getId());
 
-            while (j <= CANTITEMS) {
-                  if (resultadoItemsID.getInt(i) != -1) {
-                    stDatosItem.setInt(1, resultadoItemsID.getInt(i));
-                    resultadoDatoItem = stDatosItem.executeQuery();
+			int result = query.executeUpdate();
 
-                    paquetePersonaje.anadirItem(resultadoDatoItem.getInt(
-                            "idItem"), resultadoDatoItem.getString("nombre"),
-                            resultadoDatoItem.getInt("wereable"),
-                            resultadoDatoItem.getInt("bonusSalud"),
-                            resultadoDatoItem.getInt("bonusEnergia"),
-                            resultadoDatoItem.getInt("bonusFuerza"),
-                            resultadoDatoItem.getInt("bonusDestreza"),
-                            resultadoDatoItem.getInt("bonusInteligencia"),
-                            resultadoDatoItem.getString("foto"),
-                            resultadoDatoItem.getString("fotoEquipado"));
-                }
-                i++;
-                j++;
-            }
-              Servidor.log.append("El personaje " + paquetePersonaje.getNombre()
-              + " se ha actualizado con éxito." + System.lineSeparator());
-            } catch (SQLException e) {
-             Servidor.log.append("Fallo al intentar actualizar el personaje "
-            + paquetePersonaje.getNombre()  + System.lineSeparator());
-        }
+			Session sessionMochila = factory.openSession();
+			Query queryMochila = sessionMochila.createQuery("FROM mochila WHERE idMochila =:idMochila");
+			queryMochila.setParameter("idMochila", paquetePersonaje.getId());
 
-    	/*	INTENTO - accede a las columnas, intente iterar por las propiedades de la clase y no salio
-    	 * Configuration cfg = new Configuration();
-    		cfg.configure("hibernate.cfg.xml");
-    		SessionFactory factory = cfg.buildSessionFactory();
-    		Session session = factory.openSession();
+			mochila resultadoItemsID = (mochila) queryMochila.getSingleResult();
+			Session sessionItem = factory.openSession();
+			Query queryitem = sessionItem.createQuery("FROM item WHERE idItem =:idItem");
 
-    		Transaction tx = null;
+			int i = 2;
+			int j = 1;
 
-    		try {
-    			tx = session.beginTransaction();
-    			Query query = session
-    					.createQuery("UPDATE personaje SET fuerza=:fuerza,"
-    			                  + "destreza=:destreza, inteligencia=:inteligencia, saludTope=:saludTope, energiaTope=:energiaTope,"
-    			                  + "experiencia=?, nivel=?, puntosSkills=?, fuerzaSkill=?,"
-    			                  + "inteligenciaSkill=:inteligenciaSkill, destrezaSkill=:destrezaSkill "
-    			                  + "WHERE idPersonaje=:idPersonaje");
-    			// Seteo parametros items
-    			
-    			query.setParameter("fuerza",paquetePersonaje.getFuerza());
-    			query.setParameter("destreza",paquetePersonaje.getDestreza());
-    			query.setParameter("inteligencia",paquetePersonaje.getInteligencia());
-    			query.setParameter("saludTope",paquetePersonaje.getSaludTope());
-    			query.setParameter("energiaTope",paquetePersonaje.getEnergiaTope());
-    			query.setParameter("experiencia",paquetePersonaje.getExperiencia());
-    			query.setParameter("nivel",paquetePersonaje.getNivel());
-    			query.setParameter("puntosSkills",paquetePersonaje.getPuntosSkillsDisponibles());
-    			query.setParameter("fuerzaSkill",paquetePersonaje.getFuerzaSkill());
-    			query.setParameter("inteligenciaSkill",paquetePersonaje.getInteligenciaSkill());
-    			query.setParameter("destrezaSkill",paquetePersonaje.getDestrezaSkill());
-    			query.setParameter("idPersonaje",paquetePersonaje.getId());
-    			    		   			
-    			int result = query.executeUpdate();
+			paquetePersonaje.eliminarItems();
 
-    			
-    			Session sessionMochila = factory.openSession();    			
-    			Query queryMochila = sessionMochila.createQuery("FROM mochila WHERE idMochila =:idMochila");
-    			queryMochila.setParameter("idMochila",paquetePersonaje.getId());
-    	           
-    			
-    			
-    			//List<mochila> resultadoItemsID = queryMochila.list();   		
-    			mochila resultadoItemsID = (mochila)queryMochila.getSingleResult();
-    			Session sessionItem = factory.openSession();    			
-    			Query queryitem = sessionItem.createQuery("FROM item WHERE idItem =:idItem");
+			while (j <= CANTITEMS) {
+				if (resultadoItemsID.getByItemId(i) != -1) {// si hay algo
 
-    			int i = 2;
-    	        int j = 1;
-	            
-	            List<Item>resultadoDatoItem = null;
-	            paquetePersonaje.eliminarItems();
-	           
-    	        while (j <= CANTITEMS) {
-    	        	if (resultadoItemsID.getItem1() != -1) {
-    	                  //if (resultadoItemsID.getInt(i) != -1) {
-    	        		
-    	        		queryitem.setParameter("idItem", resultadoItemsID.getItem1());
-    	                    resultadoDatoItem = queryitem.executeQuery();
+					queryitem = sessionItem.createQuery("FROM item WHERE idItem =:idItem");
+					queryitem.setParameter("idItem", resultadoItemsID.getByItemId(i));
 
-    	                    paquetePersonaje.anadirItem(resultadoDatoItem.getInt(
-    	                            "idItem"), resultadoDatoItem.getString("nombre"),
-    	                            resultadoDatoItem.getInt("wereable"),
-    	                            resultadoDatoItem.getInt("bonusSalud"),
-    	                            resultadoDatoItem.getInt("bonusEnergia"),
-    	                            resultadoDatoItem.getInt("bonusFuerza"),
-    	                            resultadoDatoItem.getInt("bonusDestreza"),
-    	                            resultadoDatoItem.getInt("bonusInteligencia"),
-    	                            resultadoDatoItem.getString("foto"),
-    	                            resultadoDatoItem.getString("fotoEquipado"));
-    	                }
-    	                i++;
-    	                j++;
-    	            }
-    			
-    			
-    			tx.commit();
-    		}
+					ItemHb resultadoDatoItem = (ItemHb) queryitem.getSingleResult();
 
-    		catch (Exception e) {
-    			if (tx != null)
-    				tx.rollback();
-    			Servidor.log.append("Fallo al intentar actualizar personaje" + System.lineSeparator());
-    			Servidor.log.append(e.getMessage() + System.lineSeparator());
-    		} finally {
-    			session.close();
-    		}
-   
-    		*/
-    		
-    }
+					paquetePersonaje.anadirItem(resultadoDatoItem.getIdItem(), resultadoDatoItem.getNombre(),
+							resultadoDatoItem.getWereable(), resultadoDatoItem.getBonusSalud(),
+							resultadoDatoItem.getBonusEnergia(), resultadoDatoItem.getBonusFuerza(),
+							resultadoDatoItem.getBonusDestreza(), resultadoDatoItem.getBonusInteligencia(),
+							resultadoDatoItem.getFoto(), resultadoDatoItem.getFotoEquipado());
+				}
+				i++;
+				j++;
+			}
+
+			tx.commit();
+		}
+
+		catch (Exception e) {
+			if (tx != null)
+				tx.rollback();
+			Servidor.log.append("Fallo al intentar actualizar personaje" + System.lineSeparator());
+			Servidor.log.append(e.getMessage() + System.lineSeparator());
+		} finally {
+			session.close();
+		}
+
+	}
 
     /**
      * Método que se encarga de traer el personaje asociado al usuario
@@ -786,28 +760,7 @@ public class Conector {
       * @param paquetePersonaje datos del personaje a actualizar.
       */
      public void actualizarInventario(final PaquetePersonaje paquetePersonaje) {//HBN DONE!
-       /* int i = 0;
-        PreparedStatement stActualizarMochila;
-        try {
-            stActualizarMochila = connect.prepareStatement(
-                    "UPDATE mochila SET item1=? ,item2=? ,item3=? ,item4=?"
-                   + ",item5=? ,item6=? ,item7=? ,item8=? ,item9=? "
-                   + ",item10=? ,item11=? ,item12=? ,item13=? ,item14=?"
-                   + ",item15=?,item16=? ,item17=? ,item18=? ,item19=?"
-                   + ",item20=? WHERE idMochila=?");
-           while (i < paquetePersonaje.getCantItems()) {
-               stActualizarMochila.setInt(i + 1, paquetePersonaje.getItemID(i));
-               i++;
-           }
-           for (int j = paquetePersonaje.getCantItems();
-                   j < CANTITEMSMAXMOCHILA; j++) {
-            stActualizarMochila.setInt(j + 1, -1);
-            }
-            stActualizarMochila.setInt(PARAM21, paquetePersonaje.getId());
-            stActualizarMochila.executeUpdate();
 
-         } catch (SQLException e) {
-         }*/
 		Configuration cfg = new Configuration();
 		cfg.configure("hibernate.cfg.xml");
 		SessionFactory factory = cfg.buildSessionFactory();
@@ -854,44 +807,7 @@ public class Conector {
      * @param idPersonaje al que se le desea actualizar el inventario.
      */
      public void actualizarInventario(final int idPersonaje) { //HBN DONE!
-       /* int i = 0;
-        PaquetePersonaje paquetePersonaje = Servidor
-             .getPersonajesConectados().get(idPersonaje);
-        PreparedStatement stActualizarMochila;
-        try {
-            stActualizarMochila = connect.prepareStatement(
-                 "UPDATE mochila SET item1=? ,item2=? ,item3=?"
-                 + ",item4=? ,item5=? ,item6=? ,item7=? ,item8=? ,item9=? "
-                 + ",item10=? ,item11=? ,item12=? ,item13=? ,item14=?"
-                 + ",item15=? ,item16=? ,item17=? ,item18=? ,item19=?"
-                 + ",item20=? WHERE idMochila=?");
-        while (i < paquetePersonaje.getCantItems()) {
-             stActualizarMochila.setInt(i + 1, paquetePersonaje.getItemID(i));
-             i++;
-             }
-          if (paquetePersonaje.getCantItems() < CANTITEMS) {
-                int itemGanado = new Random().nextInt(
-                      CANTITEMS + CANTITEMSMAXMOCHILA);
-                itemGanado += 1;
-                stActualizarMochila.setInt(
-                      paquetePersonaje.getCantItems() + 1, itemGanado);
-                for (int j = paquetePersonaje.getCantItems() + 2;
-                      j < CANTITEMSMAXMOCHILA; j++) {
-                   stActualizarMochila.setInt(j, -1);
-                }
-            } else {
-              for (int j = paquetePersonaje.getCantItems() + 1;
-                      j < CANTITEMSMAXMOCHILA; j++) {
-                  stActualizarMochila.setInt(j, -1);
-              }
-            }
-            stActualizarMochila.setInt(PARAM21, paquetePersonaje.getId());
-            stActualizarMochila.executeUpdate();
-
-        } catch (SQLException e) {
-             Servidor.log.append("Falló al intentar actualizar"
-                  + "inventario de" + idPersonaje + "\n");
-         }*/
+ 
 		Configuration cfg = new Configuration();
 		cfg.configure("hibernate.cfg.xml");
 		SessionFactory factory = cfg.buildSessionFactory();
@@ -956,36 +872,6 @@ public class Conector {
       */
 	public void actualizarPersonajeSubioNivel(final PaquetePersonaje paquetePersonaje) {
 
-		/*
-		 * try { PreparedStatement stActualizarPersonaje = connect
-		 * .prepareStatement("UPDATE personaje SET fuerza=?," +
-		 * "destreza=?, inteligencia=?, saludTope=?, energiaTope=?," +
-		 * "experiencia=?, nivel=?, puntosSkills=?, fuerzaSkill=?," +
-		 * "inteligenciaSkill=?, destrezaSkill=?" + " WHERE idPersonaje=?");
-		 * 
-		 * stActualizarPersonaje.setInt(PARAM1, paquetePersonaje.getFuerza());
-		 * stActualizarPersonaje.setInt(PARAM2, paquetePersonaje.getDestreza());
-		 * stActualizarPersonaje.setInt(PARAM3, paquetePersonaje.getInteligencia());
-		 * stActualizarPersonaje.setInt(PARAM4, paquetePersonaje.getSaludTope());
-		 * stActualizarPersonaje.setInt(PARAM5, paquetePersonaje.getEnergiaTope());
-		 * stActualizarPersonaje.setInt(PARAM6, paquetePersonaje.getExperiencia());
-		 * stActualizarPersonaje.setInt(PARAM7, paquetePersonaje.getNivel());
-		 * stActualizarPersonaje.setInt(PARAM8,
-		 * paquetePersonaje.getPuntosSkillsDisponibles());
-		 * stActualizarPersonaje.setInt(PARAM9, paquetePersonaje.getFuerzaSkill());
-		 * stActualizarPersonaje.setInt(PARAM10,
-		 * paquetePersonaje.getInteligenciaSkill());
-		 * stActualizarPersonaje.setInt(PARAM11, paquetePersonaje.getDestrezaSkill());
-		 * stActualizarPersonaje.setInt(PARAM12, paquetePersonaje.getId());
-		 * 
-		 * stActualizarPersonaje.executeUpdate();
-		 * 
-		 * Servidor.log.append("El personaje " + paquetePersonaje.getNombre() +
-		 * " se ha actualizado con éxito." + System.lineSeparator()); } catch
-		 * (SQLException e) {
-		 * Servidor.log.append("Fallo al intentar actualizar el personaje " +
-		 * paquetePersonaje.getNombre() + System.lineSeparator()); }
-		 */
 		Configuration cfg = new Configuration();
 		cfg.configure("hibernate.cfg.xml");
 		SessionFactory factory = cfg.buildSessionFactory();

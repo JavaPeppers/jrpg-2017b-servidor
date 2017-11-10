@@ -2,7 +2,7 @@ package servidor;
 
 public class mochila {
 	private int idMochila;
-	private int	item1;
+	private int item1;
 	private int item2;
 	private int item3;
 	private int item4;
@@ -22,9 +22,9 @@ public class mochila {
 	private int item18;
 	private int item19;
 	private int item20;
-	
+
 	public mochila() {
-		
+
 	}
 
 	public int getIdMochila() {
@@ -194,6 +194,75 @@ public class mochila {
 	public void setItem20(int item20) {
 		this.item20 = item20;
 	}
-	
-	
+
+	private static final int SLOT1 = 1;
+	private static final int SLOT2 = 2;
+	private static final int SLOT3 = 3;
+	private static final int SLOT4 = 4;
+	private static final int SLOT5 = 5;
+	private static final int SLOT6 = 6;
+	private static final int SLOT7 = 7;
+	private static final int SLOT8 = 8;
+	private static final int SLOT9 = 9;
+	private static final int SLOT10 = 10;
+	private static final int SLOT11 = 11;
+	private static final int SLOT12 = 12;
+	private static final int SLOT13 = 13;
+	private static final int SLOT14 = 14;
+	private static final int SLOT15 = 15;
+	private static final int SLOT16 = 16;
+	private static final int SLOT17 = 17;
+	private static final int SLOT18 = 18;
+	private static final int SLOT19 = 19;
+	private static final int SLOT20 = 20;
+
+	public int getByItemId(final int i) {
+		switch (i) {
+		case SLOT1:
+			return getItem1();
+		case SLOT2:
+			return getItem2();
+		case SLOT3:
+			return getItem3();
+		case SLOT4:
+			return getItem4();
+		case SLOT5:
+			return getItem5();
+		case SLOT6:
+			return getItem6();
+		case SLOT7:
+			return getItem7();
+		case SLOT8:
+			return getItem8();
+		case SLOT9:
+			return getItem9();
+		case SLOT10:
+			return getItem10();
+		case SLOT11:
+			return getItem11();
+		case SLOT12:
+			return getItem12();
+		case SLOT13:
+			return getItem13();
+		case SLOT14:
+			return getItem14();
+		case SLOT15:
+			return getItem15();
+		case SLOT16:
+			return getItem16();
+		case SLOT17:
+			return getItem17();
+		case SLOT18:
+			return getItem18();
+		case SLOT19:
+			return getItem19();
+		case SLOT20:
+			return getItem20();
+		default:
+			break;
+		}
+
+		return -1;
+	}
+
 }
