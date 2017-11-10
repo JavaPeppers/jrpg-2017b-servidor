@@ -50,60 +50,6 @@ public class Conector {
     /** Variable que se utilizará para la conexión. **/
     private Connection connect;
 
-    /** Variable que indica el parámetro 1 a enviar. **/
-    private static final int PARAM1 = 1;
-
-    /** Variable que indica el parámetro 2 a enviar. **/
-    private static final int PARAM2 = 2;
-
-    /** Variable que indica el parámetro 3 a enviar. **/
-    private static final int PARAM3 = 3;
-
-    /** Variable que indica el parámetro 4 a enviar. **/
-    private static final int PARAM4 = 4;
-
-    /** Variable que indica el parámetro 5 a enviar. **/
-    private static final int PARAM5 = 5;
-
-    /** Variable que indica el parámetro 6 a enviar. **/
-    private static final int PARAM6 = 6;
-
-    /** Variable que indica el parámetro 7 a enviar. **/
-    private static final int PARAM7 = 7;
-
-    /** Variable que indica el parámetro 8 a enviar. **/
-    private static final int PARAM8 = 8;
-
-    /** Variable que indica el parámetro 9 a enviar. **/
-    private static final int PARAM9 = 9;
-
-    /** Variable que indica el parámetro 10 a enviar. **/
-    private static final int PARAM10 = 10;
-
-    /** Variable que indica el parámetro 11 a enviar. **/
-    private static final int PARAM11 = 11;
-
-    /** Variable que indica el parámetro 12 a enviar. **/
-    private static final int PARAM12 = 12;
-
-    /** Variable que indica el parámetro 13 a enviar. **/
-    private static final int PARAM13 = 13;
-
-    /** Variable que indica el parámetro 14 a enviar. **/
-    private static final int PARAM14 = 14;
-
-    /** Variable que indica el parámetro 15 a enviar. **/
-    private static final int PARAM15 = 15;
-
-    /** Variable que indica el parámetro 16 a enviar. **/
-    private static final int PARAM16 = 16;
-
-    /** Variable que indica el parámetro 17 a enviar. **/
-    private static final int PARAM17 = 17;
-
-    /** Variable que indica el parámetro 21 a enviar. **/
-    private static final int PARAM21 = 21;
-
     /** Variable que indica la cant de items disponibles. **/
     private static final int CANTITEMS = 9;
 
@@ -229,6 +175,8 @@ public class Conector {
 			System.out.println(pj.getId());
 			user.setIdPj(pj.getId());
 
+			session.close();
+			factory.close();
 			actualizarUsuario(user);
 
 			// Salida por true o false dependiendo de como
@@ -243,8 +191,6 @@ public class Conector {
 
 				HibernateUtil.closeThreadSession(session, factory);
 
-				session.close();
-				factory.close();
 
 				Servidor.log.append("Error al registrar la mochila y el inventario del usuario " + user.getUsername()
 						+ " con el personaje" + pj.getId() + System.lineSeparator());
@@ -316,6 +262,7 @@ public class Conector {
 		Transaction tx = null;
 
 		try {
+			tx = session.beginTransaction();
 			// Preparo la consulta para el registro el inventario en la base de
 			// datos
 			Inv inventario = new Inv(idInventarioMochila, -1, -1, -1, -1, -1, -1);
@@ -329,7 +276,7 @@ public class Conector {
 			session.save(bag);
 
 			Query query = session.createQuery("UPDATE PaquetePersonaje SET idInventario= :idInventario,"
-					+ "idMochila= :idMochila WHERE idPersonaje= :idPersonaje");
+					+ " idMochila= :idMochila WHERE idPersonaje= :idPersonaje");
 
 			query.setParameter("idInventario", idInventarioMochila);
 			query.setParameter("idMochila", idInventarioMochila);
@@ -346,7 +293,7 @@ public class Conector {
 		catch (Exception e) {
 			if (tx != null)
 				tx.rollback();
-			Servidor.log.append("Fallo al intentar actualizar personaje" + System.lineSeparator());
+			Servidor.log.append("Fallo al intentar registrar el inventario Mochila" + System.lineSeparator());
 			Servidor.log.append(e.getMessage() + System.lineSeparator());
 		} finally {
 			session.close();
@@ -455,7 +402,7 @@ public class Conector {
 		cfg.configure("hibernate.cfg.xml");
 		SessionFactory factory = cfg.buildSessionFactory();
 		Session session = factory.openSession();
-		Session sessionMochila = factory.openSession();
+		//Session sessionMochila = factory.openSession();
 		
 		Transaction tx = null;
 
@@ -483,37 +430,40 @@ public class Conector {
 			int result = query.executeUpdate();
 
 			
-			Query queryMochila = sessionMochila.createQuery("FROM Mochila WHERE idMochila =:idMochila");
+			Query queryMochila = session.createQuery("FROM Mochila WHERE idMochila = :idMochila");
 			queryMochila.setParameter("idMochila", paquetePersonaje.getId());
-
-			Mochila resultadoItemsID = (Mochila) queryMochila.getSingleResult();
-			Session sessionItem = factory.openSession();
+			//Mochila resultadoItemsID = (Mochila) queryMochila.getSingleResult();
+			List<Mochila> resultadoItemsIDList = queryMochila.list();
+			//Session sessionItem = factory.openSession();
 			Query queryitem;
 
 			int i = 2;
 			int j = 1;
+			Mochila resultadoItemsID;
+			//dbPersonaje.eliminarItems();
+			if (resultadoItemsIDList != null && !resultadoItemsIDList.isEmpty()) {
 
-			//paquetePersonaje.eliminarItems();???????
+				resultadoItemsID = resultadoItemsIDList.get(0);
 
-			while (j <= CANTITEMS) {
-				if (resultadoItemsID.getByItemId(i) != -1) {// si hay algo
+				while (j <= CANTITEMS) {
+					if (resultadoItemsID.getByItemId(i) != -1) {// si hay algo
 
-					queryitem = sessionItem.createQuery("FROM ItemHb WHERE idItem =:idItem");
-					queryitem.setParameter("idItem", resultadoItemsID.getByItemId(i));
+						queryitem = session.createQuery("FROM ItemHb WHERE idItem = :idItem");
+						queryitem.setParameter("idItem", resultadoItemsID.getByItemId(i));
 
-					ItemHb resultadoDatoItem = (ItemHb) queryitem.getSingleResult();
+						ItemHb resultadoDatoItem = (ItemHb) queryitem.getSingleResult();
 
-					paquetePersonaje.anadirItem(resultadoDatoItem.getIdItem(), resultadoDatoItem.getNombre(),
-							resultadoDatoItem.getWereable(), resultadoDatoItem.getBonusSalud(),
-							resultadoDatoItem.getBonusEnergia(), resultadoDatoItem.getBonusFuerza(),
-							resultadoDatoItem.getBonusDestreza(), resultadoDatoItem.getBonusInteligencia(),
-							resultadoDatoItem.getFoto(), resultadoDatoItem.getFotoEquipado());
+						paquetePersonaje.anadirItem(resultadoDatoItem.getIdItem(), resultadoDatoItem.getNombre(),
+								resultadoDatoItem.getWereable(), resultadoDatoItem.getBonusSalud(),
+								resultadoDatoItem.getBonusEnergia(), resultadoDatoItem.getBonusFuerza(),
+								resultadoDatoItem.getBonusDestreza(), resultadoDatoItem.getBonusInteligencia(),
+								resultadoDatoItem.getFoto(), resultadoDatoItem.getFotoEquipado());
+					}
+					i++;
+					j++;
 				}
-				i++;
-				j++;
-			}
-
-			tx.commit();
+			tx.commit();			 
+		  }
 		}
 
 		catch (Exception e) {
@@ -523,7 +473,7 @@ public class Conector {
 			Servidor.log.append(e.getMessage() + System.lineSeparator());
 		} finally {
 			session.close();
-			sessionMochila.close();
+			//sessionMochila.close();
 		}
 
 	}
@@ -559,44 +509,48 @@ public class Conector {
 			PaquetePersonaje dbPersonaje = (PaquetePersonaje) queryPersonaje.getSingleResult();
 
 			// Traigo los id de los items correspondientes a mi personaje
-			Session sessionMochila = factory.openSession();
-			Query queryMochila = sessionMochila.createQuery("FROM Mochila WHERE idMochila =:idMochila");
+			//Session sessionMochila = factory.openSession();
+			Query queryMochila = session.createQuery("FROM Mochila WHERE idMochila = :idMochila");
 			queryMochila.setParameter("idMochila", dbPersonaje.getId());
-			Mochila resultadoItemsID = (Mochila) queryMochila.getSingleResult();
-
-			Session sessionItem = factory.openSession();
+			//Mochila resultadoItemsID = (Mochila) queryMochila.getSingleResult();
+			List<Mochila> resultadoItemsIDList = queryMochila.list();
+			//Session sessionItem = factory.openSession();
 			Query queryitem;
 
 			int i = 2;
-			int j = 0;
+			int j = 1;
+			Mochila resultadoItemsID;
+			dbPersonaje.eliminarItems();
+			if (resultadoItemsIDList != null && !resultadoItemsIDList.isEmpty()) {
 
-			// dbPersonaje.eliminarItems();??
+				resultadoItemsID = resultadoItemsIDList.get(0);
 
-			while (j <= CANTITEMS) {
-				if (resultadoItemsID.getByItemId(i) != -1) {// si hay algo
+				while (j <= CANTITEMS) {
+					if (resultadoItemsID.getByItemId(i) != -1) {// si hay algo
 
-					queryitem = sessionItem.createQuery("FROM ItemHb WHERE idItem =:idItem");
-					queryitem.setParameter("idItem", resultadoItemsID.getByItemId(i));
+						queryitem = session.createQuery("FROM ItemHb WHERE idItem = :idItem");
+						queryitem.setParameter("idItem", resultadoItemsID.getByItemId(i));
 
-					ItemHb resultadoDatoItem = (ItemHb) queryitem.getSingleResult();
+						ItemHb resultadoDatoItem = (ItemHb) queryitem.getSingleResult();
 
-					dbPersonaje.anadirItem(resultadoDatoItem.getIdItem(), resultadoDatoItem.getNombre(),
-							resultadoDatoItem.getWereable(), resultadoDatoItem.getBonusSalud(),
-							resultadoDatoItem.getBonusEnergia(), resultadoDatoItem.getBonusFuerza(),
-							resultadoDatoItem.getBonusDestreza(), resultadoDatoItem.getBonusInteligencia(),
-							resultadoDatoItem.getFoto(), resultadoDatoItem.getFotoEquipado());
+						dbPersonaje.anadirItem(resultadoDatoItem.getIdItem(), resultadoDatoItem.getNombre(),
+								resultadoDatoItem.getWereable(), resultadoDatoItem.getBonusSalud(),
+								resultadoDatoItem.getBonusEnergia(), resultadoDatoItem.getBonusFuerza(),
+								resultadoDatoItem.getBonusDestreza(), resultadoDatoItem.getBonusInteligencia(),
+								resultadoDatoItem.getFoto(), resultadoDatoItem.getFotoEquipado());
+					}
+					i++;
+					j++;
 				}
-				i++;
-				j++;
-			}
 			tx.commit();
-			return dbPersonaje;
+			return dbPersonaje; 
+		  }
 		}
 
 		catch (Exception e) {
 			if (tx != null)
 				tx.rollback();
-			Servidor.log.append("Fallo al intentar actualizar personaje" + System.lineSeparator());
+			Servidor.log.append("Fallo al intentar obtener el personaje" + System.lineSeparator());
 			Servidor.log.append(e.getMessage() + System.lineSeparator());
 		} finally {
 			session.close();			
