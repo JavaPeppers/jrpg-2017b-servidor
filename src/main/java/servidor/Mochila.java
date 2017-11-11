@@ -23,8 +23,30 @@ public class Mochila {
 	private int item19;
 	private int item20;
 
-	public Mochila() {
-
+	public Mochila() {}
+	
+	public Mochila(int idMochila) {
+		this.idMochila = idMochila;
+		this.item1 = SLOT1;
+		this.item2 = SLOT2;
+		this.item3 = SLOT3;
+		this.item4 = SLOT4;
+		this.item5 = SLOT5;
+		this.item6 = SLOT6;
+		this.item7 = SLOT7;
+		this.item8 = SLOT8;
+		this.item9 = SLOT9;
+		this.item10 = SLOT10;
+		this.item11 = SLOT11;
+		this.item12 = SLOT12;
+		this.item13 = SLOT13;
+		this.item14 = SLOT14;
+		this.item15 = SLOT15;
+		this.item16 = SLOT16;
+		this.item17 = SLOT17;
+		this.item18 = SLOT18;
+		this.item19 = SLOT19;
+		this.item20 = SLOT20;		
 	}
 
 	public int getIdMochila() {

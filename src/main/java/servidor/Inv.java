@@ -9,9 +9,17 @@ public class Inv {
 	private int pecho;
 	private int accesorio;
 	
-	public Inv() {
-		
-	}
+	public Inv() {}
+	
+	public Inv(final int idInventario) {
+        this.idInventario = idInventario;
+        this.pie = -1;
+        this.cabeza = -1;
+        this.pecho = -1;
+        this.accesorio = -1;
+        this.manos1 = -1;
+        this.manos2 = -1;       
+    }
 	
 	public Inv(int idInventario, int manos1, int manos2, int pie, int cabeza, int pecho, int accesorio) {
 		super();
