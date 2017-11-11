@@ -105,14 +105,8 @@ public class Conector {
 
 	public boolean registrarUsuario(PaqueteUsuario user) {
 		// Preparo sesion de hibernate
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
-		Session session = getSessionFactory().openSession();
 
-		// HibernateUtil.openThreadSession(session);
+		Session session = getSessionFactory().openSession();
 
 		// Preparo el criteria
 		CriteriaBuilder cBuilder = session.getCriteriaBuilder();
@@ -147,7 +141,6 @@ public class Conector {
 		} else {
 			// Si ya existe un usuario con ese nombre, cierro sesion, escribo el log y me
 			// voy
-			// HibernateUtil.closeThreadSession(session, factory);
 			session.close();
 			Servidor.log
 					.append("El usuario " + user.getUsername() + " ya se encuentra en uso." + System.lineSeparator());
@@ -163,68 +156,64 @@ public class Conector {
 
 	public boolean registrarPersonaje(PaquetePersonaje pj, PaqueteUsuario user) {
 
-		// Preparo sesion de hibernate
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
 		Session session = getSessionFactory().openSession();
 
 		// HibernateUtil.openThreadSession(session);
-		// Transaction transaccion = session.beginTransaction();
+		Transaction transaccion = session.beginTransaction();
 		try {
 			// Personaje
-			pj.setAlianza(-1);
-			pj.setExperiencia(0);
-			pj.setIdInventario(pj.getId());
-			pj.setIdMochila(pj.getId());
-			pj.setNivel(1);
 
+			session.save(pj);
+			Servidor.log.append(
+					"1 - " + user.getUsername() + " ha creado el personaje: " + pj.getId() + System.lineSeparator());
 			// update Usuario
-			pj.setId((Integer) session.save(pj));
-			System.out.println(pj.getId());
+			// pj.setId((Integer) session.save(pj));
+
 			user.setIdPj(pj.getId());
-			actualizarUsuario(user);
+			// actualizarUsuario(user);
+			session.update(user);
+			Servidor.log.append("2 - " + user.getUsername() + "  termino de crear su pj: " + user.getIdPj()
+					+ System.lineSeparator());
 
 			// Registro inventario y mochila
 			final Inv inventario = new Inv(pj.getId());
 			session.save(inventario);
 
+			Servidor.log.append("3 - " + user.getUsername() + "  termino de crear inventario: "
+					+ inventario.getidInventario() + System.lineSeparator());
+
 			final Mochila bag = new Mochila(pj.getId());
 			session.save(bag);
+
+			Servidor.log.append("4 - " + user.getUsername() + "  termino de crear mochila: " + bag.getIdMochila()
+					+ System.lineSeparator());
 
 			Query query = session.createQuery("UPDATE PaquetePersonaje SET idInventario= :idInventario,"
 					+ " idMochila= :idMochila WHERE idPersonaje= :idPersonaje");
 
-			session.save(pj);
 			pj.setidInventario(inventario.getidInventario());
 			pj.setidMochila(bag.getIdMochila());
 			session.update(pj);
-			/*
-			 * query.setParameter("idInventario", inventario.getidInventario());
-			 * query.setParameter("idMochila",bag.getIdMochila());
-			 * query.setParameter("idPersonaje", pj.getId()); int result =
-			 * query.executeUpdate();
-			 */
+			session.update(bag);
 
-			// transaccion.commit();
+			Servidor.log.append("5 - " + user.getUsername() + "  updateo su mochila e inventario " + pj.getidMochila()
+					+ " inv: " + pj.getidInventario() + System.lineSeparator());
+
+			transaccion.commit();
 
 			Servidor.log.append("El usuario " + user.getUsername() + " ha creado el personaje " + pj.getId()
 					+ System.lineSeparator());
 
-			// HibernateUtil.closeThreadSession(session, factory);
 			session.close();
 			return true;
 
 		} catch (HibernateException e) {
 			// Si falló, hago un rollback de la transaccion, cierro sesion, escribo el log y
 			// me voy
-			// if (transaccion != null)
-			// transaccion.rollback();
+			if (transaccion != null)
+				transaccion.rollback();
 			e.printStackTrace();
 
-			// HibernateUtil.closeThreadSession(session, factory);
 			session.close();
 
 			Servidor.log.append("Error al registrar la mochila y el inventario del usuario " + user.getUsername()
@@ -238,14 +227,8 @@ public class Conector {
 
 	public void actualizarUsuario(PaqueteUsuario user) {
 		// Preparo sesion de hibernate
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
 		Session session = getSessionFactory().openSession();
 
-		// HibernateUtil.openThreadSession(session);
 		try {
 			// Preparo el criteria
 			CriteriaBuilder cBuilder = session.getCriteriaBuilder();
@@ -267,82 +250,6 @@ public class Conector {
 	}
 
 	/**
-	 * Método encargado de registrar el pesonaje en la base de datos.
-	 * 
-	 * @param paquetePersonaje
-	 *            PaquetePersonaje con los datos del personaje a registrar
-	 * @param paqueteUsuario
-	 *            PaqueteUsuario con los datos del usuario al que hay que
-	 *            registrarle el personaje
-	 * @return boolean
-	 */
-
-	/**
-	 * Método que registra el inventario del personaje.
-	 * 
-	 * @param idInventarioMochila
-	 *            identificador del inventario
-	 * @return boolean
-	 */
-	public boolean registrarInventarioMochila(final int idInventarioMochila) {
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
-
-		Session session = getSessionFactory().openSession();
-
-		Transaction tx = null;
-
-		try {
-			tx = session.beginTransaction();
-			// Preparo la consulta para el registro el inventario en la base de
-			// datos
-			final Inv inventario = new Inv(idInventarioMochila);
-			session.save(inventario);
-
-			//
-			Query queryUsuario = session.createQuery("from Inv where idInventario = :idInventario ");
-			queryUsuario.setParameter("idInventario", idInventarioMochila);
-			Inv invent = (Inv) queryUsuario.getSingleResult();
-			//
-
-			// Registro inventario y mochila
-			final Mochila bag = new Mochila(idInventarioMochila);
-			session.save(bag);
-
-			//
-			Query queryUsuario2 = session.createQuery("from Mochila where idMochila = :idMochila ");
-			queryUsuario2.setParameter("idMochila", idInventarioMochila);
-			Mochila moch = (Mochila) queryUsuario2.getSingleResult();
-			//
-
-			Query query = session.createQuery("UPDATE PaquetePersonaje SET idInventario= :idInventario,"
-					+ " idMochila= :idMochila WHERE idPersonaje= :idPersonaje");
-
-			query.setParameter("idInventario", idInventarioMochila);
-			query.setParameter("idMochila", idInventarioMochila);
-			query.setParameter("idPersonaje", idInventarioMochila);
-			int result = query.executeUpdate();
-
-			Servidor.log.append("Se ha registrado el inventario de " + idInventarioMochila + System.lineSeparator());
-
-			tx.commit();
-			return true;
-
-		} catch (HibernateException e) {
-			if (tx != null)
-				tx.rollback();
-			Servidor.log.append("Fallo al intentar registrar el inventario Mochila" + System.lineSeparator());
-			Servidor.log.append(e.getMessage() + System.lineSeparator());
-		} finally {
-			session.close();
-		}
-		return false;
-	}
-
-	/**
 	 * Método que se encarga de loguear al usuario.
 	 * 
 	 * @param user
@@ -351,11 +258,6 @@ public class Conector {
 	 */
 	public boolean loguearUsuario(final PaqueteUsuario user) {
 		// Preparo sesion de hibernate
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
 		Session session = getSessionFactory().openSession();
 
 		try {
@@ -376,8 +278,6 @@ public class Conector {
 
 				Servidor.log
 						.append("El usuario " + user.getUsername() + " ha iniciado sesión." + System.lineSeparator());
-				// HibernateUtil.closeThreadSession(session, factory);
-				// session.close();
 				return true;
 			}
 			return false;
@@ -400,13 +300,7 @@ public class Conector {
 	 *            PaquetePersonaje con los datos del personaje
 	 */
 	@SuppressWarnings("deprecation")
-	public void actualizarPersonaje(final PaquetePersonaje paquetePersonaje) {		
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
-		// Session sessionMochila = factory.openSession();
+	public void actualizarPersonaje(final PaquetePersonaje paquetePersonaje) {
 		Session session = getSessionFactory().openSession();
 
 		Transaction tx = null;
@@ -444,7 +338,7 @@ public class Conector {
 			int i = 2;
 			int j = 1;
 			Mochila resultadoItemsID;
-			// dbPersonaje.eliminarItems();
+
 			if (resultadoItemsIDList != null && !resultadoItemsIDList.isEmpty()) {
 
 				resultadoItemsID = resultadoItemsIDList.get(0);
@@ -456,7 +350,7 @@ public class Conector {
 						queryitem.setParameter("idItem", resultadoItemsID.getByItemId(i));
 
 						List<ItemHb> resultadoDatoItemList = queryitem.list();
-						// ItemHb resultadoDatoItem = (ItemHb) queryitem.getSingleResult();
+
 						ItemHb resultadoDatoItem = resultadoDatoItemList != null ? resultadoDatoItemList.get(0)
 								: new ItemHb();
 
@@ -480,7 +374,6 @@ public class Conector {
 			Servidor.log.append(e.getMessage() + System.lineSeparator());
 		} finally {
 			session.close();
-			// sessionMochila.close();
 		}
 
 	}
@@ -496,19 +389,12 @@ public class Conector {
 	 */
 	@SuppressWarnings("finally")
 	public PaquetePersonaje getPersonaje(final PaqueteUsuario user) throws IOException {
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
-
 		Session session = getSessionFactory().openSession();
+		PaquetePersonaje dbPersonaje = null;
+		Transaction tx = null;
 
-		//Transaction tx = null;
-
+		tx = session.beginTransaction();
 		try {
-			//tx = session.beginTransaction();
-
 			Query queryUsuario = session.createQuery("from PaqueteUsuario where usuario = :userName ");
 			queryUsuario.setParameter("userName", user.getUsername());
 			PaqueteUsuario dbUser = (PaqueteUsuario) queryUsuario.getSingleResult();
@@ -518,15 +404,13 @@ public class Conector {
 			// Selecciono los datos del personaje
 			Query queryPersonaje = session.createQuery("from PaquetePersonaje where idPersonaje = :idPersonaje ");
 			queryPersonaje.setParameter("idPersonaje", idPersonaje);
-			PaquetePersonaje dbPersonaje = (PaquetePersonaje) queryPersonaje.getSingleResult();
+			dbPersonaje = (PaquetePersonaje) queryPersonaje.getSingleResult();
 
 			// Traigo los id de los items correspondientes a mi personaje
-			// Session sessionMochila = factory.openSession();
 			Query queryMochila = session.createQuery("FROM Mochila WHERE idMochila = :idMochila");
 			queryMochila.setParameter("idMochila", dbPersonaje.getId());
-			// Mochila resultadoItemsID = (Mochila) queryMochila.getSingleResult();
 			List<Mochila> resultadoItemsIDList = queryMochila.list();
-			// Session sessionItem = factory.openSession();
+
 			Query queryitem;
 
 			int i = 2;
@@ -554,20 +438,20 @@ public class Conector {
 					i++;
 					j++;
 				}
-				//tx.commit();
+				tx.commit();
 				return dbPersonaje;
 			}
 		}
 
 		catch (Exception e) {
-			//if (tx != null)
-			//	tx.rollback();
+			if (tx != null)
+				tx.rollback();
 			Servidor.log.append("Fallo al intentar obtener el personaje" + System.lineSeparator());
 			Servidor.log.append(e.getMessage() + System.lineSeparator());
 		} finally {
 			session.close();
 		}
-		return new PaquetePersonaje();
+		return dbPersonaje;
 	}
 
 	/**
@@ -578,11 +462,6 @@ public class Conector {
 	 * @return PaqueteUsuario con los datos del usuario
 	 */
 	public PaqueteUsuario getUsuario(final String usuario) {// HBN DONE!
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
 		Session session = getSessionFactory().openSession();
 
 		Transaction tx = null;
@@ -619,11 +498,6 @@ public class Conector {
 	 */
 	public void actualizarInventario(final PaquetePersonaje paquetePersonaje) {// HBN DONE!
 
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
 		Session session = getSessionFactory().openSession();
 
 		Transaction tx = null;
@@ -670,11 +544,6 @@ public class Conector {
 	 */
 	public void actualizarInventario(final int idPersonaje) { // HBN DONE!
 
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
 		Session session = getSessionFactory().openSession();
 
 		Transaction tx = null;
@@ -739,11 +608,6 @@ public class Conector {
 	 */
 	public void actualizarPersonajeSubioNivel(final PaquetePersonaje paquetePersonaje) {
 
-		/*
-		 * Configuration cfg = new Configuration(); cfg.configure("hibernate.cfg.xml");
-		 * SessionFactory factory = cfg.buildSessionFactory(); Session session =
-		 * factory.openSession();
-		 */
 		Session session = getSessionFactory().openSession();
 
 		Transaction tx = null;
