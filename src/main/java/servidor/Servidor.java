@@ -269,7 +269,6 @@ public class Servidor extends Thread {
         } catch (FileNotFoundException e1) {
            e1.printStackTrace();
         }
-        System.out.println(puerto);
         try {
             conexionDB = new Conector();
             conexionDB.connect();
