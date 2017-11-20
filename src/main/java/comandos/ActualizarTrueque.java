@@ -35,8 +35,8 @@ public class ActualizarTrueque extends ComandosServer {
                     escuchaCliente.getPaquetePersonaje()));
             } catch (IOException e) {
                   Servidor.log.append("Falló al intentar enviar"
-                      + "actualizacion de trueque a:" +
-                      conectado.getPaquetePersonaje().getId() + "\n");
+                      + "actualizacion de trueque a:"
+                + conectado.getPaquetePersonaje().getId() + "\n");
                   }
              }
         }

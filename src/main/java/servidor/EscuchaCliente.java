@@ -84,17 +84,17 @@ public class EscuchaCliente extends Thread {
     /**
      * Método que realiza la conexión con el cliente.
      * @param ip Dirección IP de conexión.
-     * @param socket Socket.
-     * @param entrada Objeto de entrada.
-     * @param salida Objeto de salida.
+     * @param socketParam Socket.
+     * @param entradaParam Objeto de entrada.
+     * @param salidaParam Objeto de salida.
      * @throws IOException En el caso de no poder realizar la conexión.
      */
-    public EscuchaCliente(final String ip, final Socket socket,
-        final ObjectInputStream entrada, final ObjectOutputStream salida)
+    public EscuchaCliente(final String ip, final Socket socketParam,
+        final ObjectInputStream entradaParam, final ObjectOutputStream salidaParam)
             throws IOException {
-        this.socket = socket;
-        this.entrada = entrada;
-        this.salida = salida;
+        this.socket = socketParam;
+        this.entrada = entradaParam;
+        this.salida = salidaParam;
         paquetePersonaje = new PaquetePersonaje();
     }
 
@@ -199,11 +199,11 @@ public class EscuchaCliente extends Thread {
 
      /**
       * Método que setea el paqueteMovimiento.
-      * @param paqueteMovimiento Movimiento.
+      * @param paqueteMovimientoParam Movimiento.
       */
     public void setPaqueteMovimiento(
-          final PaqueteMovimiento paqueteMovimiento) {
-        this.paqueteMovimiento = paqueteMovimiento;
+          final PaqueteMovimiento paqueteMovimientoParam) {
+        this.paqueteMovimiento = paqueteMovimientoParam;
     }
 
     /**
@@ -216,10 +216,10 @@ public class EscuchaCliente extends Thread {
 
     /**
      * Método que setea el paqueteBatalla.
-     * @param paqueteBatalla PaqueteBatalla.
+     * @param paqueteBatallaParam PaqueteBatalla.
      */
-    public void setPaqueteBatalla(final PaqueteBatalla paqueteBatalla) {
-        this.paqueteBatalla = paqueteBatalla;
+    public void setPaqueteBatalla(final PaqueteBatalla paqueteBatallaParam) {
+        this.paqueteBatalla = paqueteBatallaParam;
     }
 
     /**
@@ -232,10 +232,10 @@ public class EscuchaCliente extends Thread {
 
     /**
      * Método que setea el paqueteAtacar.
-     * @param paqueteAtacar PaqueteAtacar.
+     * @param paqueteAtacarParam PaqueteAtacar.
      */
-    public void setPaqueteAtacar(final PaqueteAtacar paqueteAtacar) {
-         this.paqueteAtacar = paqueteAtacar;
+    public void setPaqueteAtacar(final PaqueteAtacar paqueteAtacarParam) {
+         this.paqueteAtacar = paqueteAtacarParam;
     }
 
     /**
@@ -248,11 +248,11 @@ public class EscuchaCliente extends Thread {
 
     /**
      * Método que setea el paqueteFinalizarBatalla.
-     * @param paqueteFinalizarBatalla paqueteFinalizarBatalla.
+     * @param paqueteFinalizarBatallaParam paqueteFinalizarBatalla.
      */
     public void setPaqueteFinalizarBatalla(
-           final PaqueteFinalizarBatalla paqueteFinalizarBatalla) {
-         this.paqueteFinalizarBatalla = paqueteFinalizarBatalla;
+           final PaqueteFinalizarBatalla paqueteFinalizarBatallaParam) {
+         this.paqueteFinalizarBatalla = paqueteFinalizarBatallaParam;
     }
 
     /**
@@ -282,28 +282,28 @@ public class EscuchaCliente extends Thread {
 
     /**
      * Méotdo que setea el paquete de personajes.
-     * @param paqueteDePersonajes PaqueteDePersonajes.
+     * @param paqueteDePersonajesParam PaqueteDePersonajes.
      */
     public void setPaqueteDePersonajes(
-          final PaqueteDePersonajes paqueteDePersonajes) {
-       this.paqueteDePersonajes = paqueteDePersonajes;
+          final PaqueteDePersonajes paqueteDePersonajesParam) {
+       this.paqueteDePersonajes = paqueteDePersonajesParam;
     }
 
     /**
      * Método que setea el id del personaje.
-     * @param idPersonaje int id de personaje.
+     * @param idPersonajeParam int id de personaje.
      */
-    public void setIdPersonaje(final int idPersonaje) {
-         this.idPersonaje = idPersonaje;
+    public void setIdPersonaje(final int idPersonajeParam) {
+         this.idPersonaje = idPersonajeParam;
     }
 
     /**
      * Método que setea el paquetePersonaje.
-     * @param paquetePersonaje PaquetePersonaje
+     * @param paquetePersonajeParam PaquetePersonaje
      */
     public void setPaquetePersonaje(
-           final PaquetePersonaje paquetePersonaje) {
-       this.paquetePersonaje = paquetePersonaje;
+           final PaquetePersonaje paquetePersonajeParam) {
+       this.paquetePersonaje = paquetePersonajeParam;
     }
 
     /**
@@ -317,10 +317,10 @@ public class EscuchaCliente extends Thread {
 
     /**
      * Método que setea el paqueteUsuario.
-     * @param paqueteUsuario paq usuario.
+     * @param paqueteUsuarioParam paq usuario.
      */
-    public void setPaqueteUsuario(final PaqueteUsuario paqueteUsuario) {
-        this.paqueteUsuario = paqueteUsuario;
+    public void setPaqueteUsuario(final PaqueteUsuario paqueteUsuarioParam) {
+        this.paqueteUsuario = paqueteUsuarioParam;
     }
 
     /**
@@ -333,11 +333,11 @@ public class EscuchaCliente extends Thread {
 
     /**
      * Método que setea el paqueteEnemigo.
-     * @param paqueteEnemigo paqueteEnemigo.
+     * @param paqueteEnemigoParam paqueteEnemigo.
      */
     public void setPaqueteEnemigo(
-       final PaqueteEnemigo paqueteEnemigo) {
-       this.paqueteEnemigo = paqueteEnemigo;
+       final PaqueteEnemigo paqueteEnemigoParam) {
+       this.paqueteEnemigo = paqueteEnemigoParam;
    }
 
     /**
@@ -350,11 +350,11 @@ public class EscuchaCliente extends Thread {
 
     /**
      * Método que setea el paqueteDeEnemigos.
-     * @param paqueteDeEnemigos paq de enemigos.
+     * @param paqueteDeEnemigosParam paq de enemigos.
      */
     public void setPaqueteDeEnemigos(
-         final PaqueteDeEnemigos paqueteDeEnemigos) {
-       this.paqueteDeEnemigos = paqueteDeEnemigos;
+         final PaqueteDeEnemigos paqueteDeEnemigosParam) {
+       this.paqueteDeEnemigos = paqueteDeEnemigosParam;
     }
 
     /**
@@ -384,11 +384,11 @@ public class EscuchaCliente extends Thread {
 
     /**
      * Método que setea el paqueteBatallaNPC.
-     * @param paqueteBatallaNPC PaqueteBatallaNPC.
+     * @param paqueteBatallaNPCParam PaqueteBatallaNPC.
      */
     public void setPaqueteBatallaNPC(
-        final PaqueteBatallaNPC paqueteBatallaNPC) {
-      this.paqueteBatallaNPC = paqueteBatallaNPC;
+        final PaqueteBatallaNPC paqueteBatallaNPCParam) {
+      this.paqueteBatallaNPC = paqueteBatallaNPCParam;
     }
 
 }

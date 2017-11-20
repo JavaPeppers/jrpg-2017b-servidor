@@ -49,8 +49,8 @@ public class Servidor extends Thread {
 
     /** Map que almacena la ubicación de los enemigos. **/
     private static Map<Integer, PaqueteEnemigo> enemigos = new HashMap<>();
-    
-    /** Map que almacena la ubicacion de los jefes **/
+
+    /** Map que almacena la ubicacion de los jefes. **/
     private static Map<Integer, PaqueteEnemigo> bosses = new HashMap<>();
 
     /** Hilo del servidor. **/
@@ -305,15 +305,15 @@ public class Servidor extends Thread {
                 enemigos.put(i, paqueteEnemigo);
 
                 setEnemigos(enemigos);
-            
+
             }
-            
+
             float x = -1407;
             float y = 1504;
             PaqueteEnemigo paqueteEnemigo = new PaqueteEnemigo(-21, x, y);
             paqueteEnemigo.setMapa(1);
             enemigos.put(-21, paqueteEnemigo);
-            		
+
 
             while (true) {
                 Socket cliente = serverSocket.accept();
@@ -453,12 +453,23 @@ public class Servidor extends Thread {
         return puerto;
     }
 
+	/**
+	 * Gets the bosses.
+	 *
+	 * @return the bosses
+	 */
 	public static Map<Integer, PaqueteEnemigo> getBosses() {
 		return bosses;
 	}
 
-	public static void setBosses(Map<Integer, PaqueteEnemigo> bosses) {
-		Servidor.bosses = bosses;
+	/**
+	 * Sets the bosses.
+	 *
+	 * @param bossesParam the bosses param
+	 */
+	public static void setBosses(final Map<Integer,
+			PaqueteEnemigo> bossesParam) {
+		Servidor.bosses = bossesParam;
 	}
 
 }

@@ -10,8 +10,16 @@ import mensajeria.PaqueteUsuario;
 import servidor.Conector;
 import servidor.Servidor;
 
+/**
+ * The Class TestConector.
+ */
 public class TestConector {
 
+	/**
+	 * Gets the random string.
+	 *
+	 * @return the random string
+	 */
 	private String getRandomString() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
@@ -24,6 +32,10 @@ public class TestConector {
         return saltStr;
 
     }
+
+	/**
+	 * Test conexion con la DB.
+	 */
 	@Test
 	public void testConexionConLaDB() {
 		new Servidor();
@@ -39,6 +51,9 @@ public class TestConector {
 		conector.close();
 	}
 
+	/**
+	 * Test registrar usuario.
+	 */
 	@Test
 	public void testRegistrarUsuario() {
 		new Servidor();
@@ -60,6 +75,11 @@ public class TestConector {
 		conector.close();
 	}
 
+	/**
+	 * Test registrar personaje.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@Test
 	public void testRegistrarPersonaje() throws IOException {
 		new Servidor();
@@ -93,6 +113,9 @@ public class TestConector {
 		conector.close();
 	}
 
+	/**
+	 * Test login usuario.
+	 */
 	@Test
 	public void testLoginUsuario() {
 		new Servidor();
@@ -114,6 +137,9 @@ public class TestConector {
 		conector.close();
 	}
 
+	/**
+	 * Test login usuario fallido.
+	 */
 	@Test
 	public void testLoginUsuarioFallido() {
 		new Servidor();

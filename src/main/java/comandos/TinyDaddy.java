@@ -3,7 +3,14 @@ package comandos;
 import mensajeria.PaquetePersonaje;
 import servidor.Servidor;
 
-public class TinyDaddy extends ComandosServer{
+/**
+ * The Class TinyDaddy.
+ */
+public class TinyDaddy extends ComandosServer {
+
+	/* (non-Javadoc)
+	 * @see mensajeria.Comando#ejecutar()
+	 */
 	@Override
 	public void ejecutar() {
 		PaquetePersonaje paquetePersonaje  = (PaquetePersonaje) getGson().fromJson(getCadenaLeida(), PaquetePersonaje.class);

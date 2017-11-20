@@ -10,6 +10,9 @@ import mensajeria.PaqueteMovimiento;
 import servidor.EscuchaCliente;
 import servidor.Servidor;
 
+/**
+ * The Class ActualizarEnemigo.
+ */
 public class ActualizarEnemigo extends ComandosServer {
 
 	/** Rango final X para el respawn. **/
@@ -27,12 +30,15 @@ public class ActualizarEnemigo extends ComandosServer {
 	@Override
 	public void ejecutar() {
 		// VER SI TIENE PERSONAJES CERCA
-		escuchaCliente.setPaqueteEnemigo((PaqueteEnemigo) getGson().fromJson(getCadenaLeida(), PaqueteEnemigo.class));
+		escuchaCliente.setPaqueteEnemigo(
+			(PaqueteEnemigo) getGson().fromJson(getCadenaLeida(),
+						PaqueteEnemigo.class));
 		float x = 0;
 		float y = 0;
 		boolean agrego = false;
 		while (!agrego) {
-			Iterator<Integer> it = Servidor.getUbicacionPersonajes().keySet().iterator();
+			Iterator<Integer> it = Servidor.
+				getUbicacionPersonajes().keySet().iterator();
 			int key;
 			PaqueteMovimiento actual;
 			x = (float) Math.random() * (0 - RANGOFINALX) + RANGOFINALX;
