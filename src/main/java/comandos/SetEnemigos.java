@@ -34,6 +34,7 @@ public class SetEnemigos extends ComandosServer {
                      packEnemigos.getEnemigos()
                      .put(i, Servidor.getEnemigos().get(i));
                 }
+                packEnemigos.getEnemigos().put(-21, Servidor.getEnemigos().get(-21));
             }
             if (aux == 2) {
                 for (int i = (INI_ENEMIGO - 1); i >= FIN_ENEMIGO; i--) {
