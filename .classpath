@@ -8,8 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="sqlite-jdbc-3.15.1.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jrpg-2017b-cliente"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jrpg-2017b-dominio"/>
 	<classpathentry kind="lib" path="C:/Users/Alejandro/Desktop/TP Taller/jrpg-2017b-servidor/hibernate-master/lib/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Alejandro/Desktop/TP Taller/jrpg-2017b-servidor/hibernate-master/lib/classmate-1.3.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Alejandro/Desktop/TP Taller/jrpg-2017b-servidor/hibernate-master/lib/dom4j-1.6.1.jar"/>
@@ -25,5 +23,7 @@
 	<classpathentry kind="lib" path="C:/Users/Alejandro/Desktop/TP Taller/jrpg-2017b-servidor/hibernate-master/lib/slf4j-api-1.7.7.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Alejandro/Desktop/TP Taller/jrpg-2017b-servidor/hibernate-master/lib/slf4j-simple-1.7.7.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Alejandro/Desktop/TP Taller/jrpg-2017b-servidor/hibernate-master/lib/sqlite-jdbc-3.7.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jrpg-2017b-cliente-master"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jrpg-2017b-dominio-master"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

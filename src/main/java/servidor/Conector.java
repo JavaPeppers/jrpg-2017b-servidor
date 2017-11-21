@@ -408,27 +408,27 @@ public class Conector {
 
 			// Traigo los id de los items correspondientes a mi personaje
 			Query queryMochila = session.createQuery("FROM Mochila WHERE idMochila = :idMochila");
-			queryMochila.setParameter("idMochila", dbPersonaje.getId());
-			List<Mochila> resultadoItemsIDList = queryMochila.list();
-
+			queryMochila.setParameter("idMochila", dbPersonaje.getidMochila());
+			Mochila mochila = (Mochila) queryMochila.getSingleResult();
+			
 			Query queryitem;
 
 			int i = 2;
 			int j = 0;
 			Mochila resultadoItemsID;
-			dbPersonaje.eliminarItems();
-			if (resultadoItemsIDList != null && !resultadoItemsIDList.isEmpty()) {
-
-				resultadoItemsID = resultadoItemsIDList.get(0);
+			dbPersonaje.eliminarItems();	
+			if (mochila != null) {
+				
+				
 
 				while (j <= CANTITEMS) {
-					if (resultadoItemsID.getByItemId(i) != -1) {// si hay algo
+					if (mochila.getByItemId(i) != -1) {// si hay algo
 
 						queryitem = session.createQuery("FROM ItemHb WHERE idItem = :idItem");
-						queryitem.setParameter("idItem", resultadoItemsID.getByItemId(i));
+						queryitem.setParameter("idItem", mochila.getByItemId(i));
 
 						ItemHb resultadoDatoItem = (ItemHb) queryitem.getSingleResult();
-
+					
 						dbPersonaje.anadirItem(resultadoDatoItem.getIdItem(), resultadoDatoItem.getNombre(),
 								resultadoDatoItem.getWereable(), resultadoDatoItem.getBonusSalud(),
 								resultadoDatoItem.getBonusEnergia(), resultadoDatoItem.getBonusFuerza(),
@@ -439,7 +439,7 @@ public class Conector {
 					j++;
 				}
 				tx.commit();
-				return dbPersonaje;
+				
 			}
 		}
 
@@ -502,6 +502,8 @@ public class Conector {
 
 		Transaction tx = null;
 
+		int value = 0;
+		
 		try {
 			tx = session.beginTransaction();
 			Query query = session
@@ -510,18 +512,19 @@ public class Conector {
 							+ "item9 = :it9 ,item10 = :it10 ,item11 = :it11 ,item12 = :it12 ,"
 							+ "item13 = :it13 ,item14 = :it14 ,item15 = :it15 ,item16 = :it16 ,"
 							+ "item17 = :it17 ,item18 = :it18 ,item19 = :it19 ,item20 = :it20"
-							+ "WHERE idMochila = :idMochila");
+							+ " WHERE idMochila = :idMochila");
 			// Seteo parametros items
 			for (int i = 0; i < paquetePersonaje.getCantItems(); i++) {
-				query.setParameter("item" + (i + 1), paquetePersonaje.getItemID(i));
+				value = i + 1;
+				query.setParameter("it" + value, paquetePersonaje.getItemID(i));
 			}
 			// seteo el resto vacio
 			for (int j = paquetePersonaje.getCantItems(); j < CANTITEMSMAXMOCHILA; j++) {
-				query.setParameter("item" + (j + 1), -1);
+				value = j + 1;
+				query.setParameter("it" + value, -1);
 			}
-			query.setParameter("idMochila", paquetePersonaje.getId());
+			query.setParameter("idMochila", paquetePersonaje.getidMochila());
 			int result = query.executeUpdate();
-
 			tx.commit();
 		}
 
@@ -548,9 +551,10 @@ public class Conector {
 
 		Transaction tx = null;
 
+		int value = 0;
+		
 		try {
 			PaquetePersonaje paquetePersonaje = Servidor.getPersonajesConectados().get(idPersonaje);
-
 			tx = session.beginTransaction();
 			Query query = session
 					.createQuery("UPDATE Mochila " + "SET item1 = :it1 ,item2 = :it2 ,item3 = :it3 ,item4 = :it4 ,"
@@ -558,37 +562,34 @@ public class Conector {
 							+ "item9 = :it9 ,item10 = :it10 ,item11 = :it11 ,item12 = :it12 ,"
 							+ "item13 = :it13 ,item14 = :it14 ,item15 = :it15 ,item16 = :it16 ,"
 							+ "item17 = :it17 ,item18 = :it18 ,item19 = :it19 ,item20 = :it20"
-							+ "WHERE idMochila = :idMochila");
+							+ " WHERE idMochila = :idMochila");
 
 			// Seteo parametros items
-			for (int i = 0; i < paquetePersonaje.getCantItems(); i++) {
-				query.setParameter("item" + (i + 1), paquetePersonaje.getItemID(i));
+		
+			Query queryPersonaje = session.createQuery("from PaquetePersonaje where idPersonaje = :idPersonaje ");
+			queryPersonaje.setParameter("idPersonaje", idPersonaje);
+			PaquetePersonaje dbPersonaje = (PaquetePersonaje) queryPersonaje.getSingleResult();
+			
+			for (int i = 0; i < dbPersonaje.getCantItems(); i++) {
+				value = i + 1;
+				query.setParameter("it" + value, paquetePersonaje.getItemID(i));
 			}
-
-			if (paquetePersonaje.getCantItems() < CANTITEMS) {
-				int itemGanado = new Random().nextInt(CANTITEMS + CANTITEMSMAXMOCHILA);
-				itemGanado += 1;
-				query.setParameter("item" + paquetePersonaje.getCantItems() + 1, itemGanado);
-
-				for (int j = paquetePersonaje.getCantItems() + 2; j < CANTITEMSMAXMOCHILA; j++) {
-					query.setParameter("item" + j, -1);
-				}
-			} else {
-				for (int j = paquetePersonaje.getCantItems() + 1; j < CANTITEMSMAXMOCHILA; j++) {
-					query.setParameter("item" + j, -1);
-				}
+			int itemGanado = new Random().nextInt(CANTITEMS + CANTITEMSMAXMOCHILA) + 1;
+			if (dbPersonaje.getCantItems() < CANTITEMS) {
+				value = dbPersonaje.getCantItems() + 1;
+				query.setParameter("it" + value, itemGanado);
+				Servidor.log.append("Asigno" + System.lineSeparator());
 			}
-
 			// seteo el resto vacio
-			for (int j = paquetePersonaje.getCantItems(); j < CANTITEMSMAXMOCHILA; j++) {
-				query.setParameter("item" + (j + 1), -1);
+			for (int j = dbPersonaje.getCantItems() + 2; j <= CANTITEMSMAXMOCHILA; j++) {
+				query.setParameter("it" + j, -1);
 			}
-			query.setParameter("idMochila", paquetePersonaje.getId());
+			query.setParameter("idMochila", paquetePersonaje.getidMochila());
+			
 			int result = query.executeUpdate();
-
+			
 			tx.commit();
 		}
-
 		catch (Exception e) {
 			if (tx != null)
 				tx.rollback();

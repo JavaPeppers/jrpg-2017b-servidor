@@ -21,6 +21,8 @@
 		<mapping resource="XML.sourceFiles/PaquetePersonaje.hbm.xml" />
 <mapping resource="XML.sourceFiles/Inventario.hbm.xml" />
 <mapping resource="XML.sourceFiles/Mochila.hbm.xml" />
+<mapping resource="XML.sourceFiles/ItemHb.hbm.xml" />
+
 
 	</session-factory>
 </hibernate-configuration>
