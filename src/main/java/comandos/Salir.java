@@ -32,5 +32,10 @@ public class Salir extends ComandosServer {
         // Indico que se desconecto
         Servidor.log.append(paquete.getIp()
              + " se ha desconectado." + System.lineSeparator());
-      }
+        
+        synchronized(Servidor.atencionConexiones) {
+        	Servidor.atencionConexiones.notify();
+        }
+     }
+    	
 }
