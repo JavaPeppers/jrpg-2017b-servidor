@@ -34,12 +34,14 @@ import dominio.Item;
 /**
  * Clase que se encarga de la comunicación con la base de datos.
  */
-public class Conector {
+/* 20/11/2017
+ *TODO:  getpersonaje graba bonus del item en tabla como atributo de personaje, eso esta bien?
+  cuando se ejecuta actualizarPerosnaje linea 302, vuelve en la base los atributos a los "base"
+  luego de ganar un pvp, si ya se tiene un item, al abrir el inventario va a aparecer un item duplicado (caso concreto, tenia 1 item, gane otro, 
+  y aparecio el item1 duplicado, pero no en la base, al presionar Exit, se ejecuta actualizarInventario, y lo graba
+  */
 
-	/*
-	 * TODO: 1 - ver los atributos que agregamos asi nomas, idMochila, etc 2 - Sumar
-	 * los 3 metodos que faltan 3 - eliminar jdbc
-	 */
+public class Conector {
 
 	/** url de la base de datos. **/
 	private String url = "primeraBase.bd";
@@ -158,7 +160,6 @@ public class Conector {
 
 		Session session = getSessionFactory().openSession();
 
-		// HibernateUtil.openThreadSession(session);
 		Transaction transaccion = session.beginTransaction();
 		try {
 			// Personaje
@@ -335,15 +336,17 @@ public class Conector {
 			// Session sessionItem = factory.openSession();
 			Query queryitem;
 
-			int i = 2;
-			int j = 1;
+			//int i = 2;
+			//int j = 1;
+			int i =1;
 			Mochila resultadoItemsID;
 
 			if (resultadoItemsIDList != null && !resultadoItemsIDList.isEmpty()) {
 
 				resultadoItemsID = resultadoItemsIDList.get(0);
 
-				while (j <= CANTITEMS) {
+				//while (j <= CANTITEMS) {
+				while (i <= CANTITEMS) {
 					if (resultadoItemsID.getByItemId(i) != -1) {// si hay algo
 
 						queryitem = session.createQuery("FROM ItemHb WHERE idItem = :idItem");
@@ -359,9 +362,10 @@ public class Conector {
 								resultadoDatoItem.getBonusEnergia(), resultadoDatoItem.getBonusFuerza(),
 								resultadoDatoItem.getBonusDestreza(), resultadoDatoItem.getBonusInteligencia(),
 								resultadoDatoItem.getFoto(), resultadoDatoItem.getFotoEquipado());
+			
 					}
 					i++;
-					j++;
+					//j++;
 				}
 				tx.commit();
 			}
@@ -413,7 +417,8 @@ public class Conector {
 			
 			Query queryitem;
 
-			int i = 2;
+			//int i = 2;
+			int i = 1;
 			int j = 0;
 			Mochila resultadoItemsID;
 			dbPersonaje.eliminarItems();	
@@ -438,6 +443,7 @@ public class Conector {
 					i++;
 					j++;
 				}
+				
 				tx.commit();
 				
 			}
@@ -519,9 +525,11 @@ public class Conector {
 				query.setParameter("it" + value, paquetePersonaje.getItemID(i));
 			}
 			// seteo el resto vacio
-			for (int j = paquetePersonaje.getCantItems(); j < CANTITEMSMAXMOCHILA; j++) {
-				value = j + 1;
-				query.setParameter("it" + value, -1);
+			//for (int j = paquetePersonaje.getCantItems(); j < CANTITEMSMAXMOCHILA; j++) {
+			int valueForEmptySlots = 0;
+			for (int j = value; j < CANTITEMSMAXMOCHILA; j++) {
+				valueForEmptySlots = j + 1;
+				query.setParameter("it" + valueForEmptySlots, -1);
 			}
 			query.setParameter("idMochila", paquetePersonaje.getidMochila());
 			int result = query.executeUpdate();
@@ -566,24 +574,32 @@ public class Conector {
 
 			// Seteo parametros items
 		
-			Query queryPersonaje = session.createQuery("from PaquetePersonaje where idPersonaje = :idPersonaje ");
+			/*Query queryPersonaje = session.createQuery("from PaquetePersonaje where idPersonaje = :idPersonaje ");
 			queryPersonaje.setParameter("idPersonaje", idPersonaje);
 			PaquetePersonaje dbPersonaje = (PaquetePersonaje) queryPersonaje.getSingleResult();
+			*/
 			
-			for (int i = 0; i < dbPersonaje.getCantItems(); i++) {
+			//for (int i = 0; i < dbPersonaje.getCantItems(); i++) {
+			for (int i = 0; i < paquetePersonaje.getCantItems(); i++) {
 				value = i + 1;
 				query.setParameter("it" + value, paquetePersonaje.getItemID(i));
 			}
+			
 			int itemGanado = new Random().nextInt(CANTITEMS + CANTITEMSMAXMOCHILA) + 1;
-			if (dbPersonaje.getCantItems() < CANTITEMS) {
-				value = dbPersonaje.getCantItems() + 1;
+			
+			//if (dbPersonaje.getCantItems() < CANTITEMS) {
+			if (paquetePersonaje.getCantItems() < CANTITEMS) {
+				value = paquetePersonaje.getCantItems() + 1;
 				query.setParameter("it" + value, itemGanado);
 				Servidor.log.append("Asigno" + System.lineSeparator());
 			}
+			
 			// seteo el resto vacio
-			for (int j = dbPersonaje.getCantItems() + 2; j <= CANTITEMSMAXMOCHILA; j++) {
+			//for (int j = dbPersonaje.getCantItems() + 2; j <= CANTITEMSMAXMOCHILA; j++) {
+			for (int j = paquetePersonaje.getCantItems() + 2; j <= CANTITEMSMAXMOCHILA; j++) {
 				query.setParameter("it" + j, -1);
 			}
+			
 			query.setParameter("idMochila", paquetePersonaje.getidMochila());
 			
 			int result = query.executeUpdate();

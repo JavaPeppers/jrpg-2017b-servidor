@@ -18,8 +18,7 @@
 		<property column="experiencia" name="experiencia" type="int"/>
 		<property column="nivel" name="nivel" type="int"/>
 		<property column="idInventario" name="idInventario" type="int"/>
-		<property column="idMochila" name="idMochila" type="int"/>
-		
+		<property column="idMochila" name="idMochila" type="int"/>		
 		
 	</class>
 </hibernate-mapping>

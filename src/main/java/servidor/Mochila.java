@@ -27,7 +27,7 @@ public class Mochila {
 	
 	public Mochila(int idMochila) {
 		this.idMochila = idMochila;
-		this.item1 = SLOT1;
+		/*this.item1 = SLOT1;
 		this.item2 = SLOT2;
 		this.item3 = SLOT3;
 		this.item4 = SLOT4;
@@ -46,7 +46,28 @@ public class Mochila {
 		this.item17 = SLOT17;
 		this.item18 = SLOT18;
 		this.item19 = SLOT19;
-		this.item20 = SLOT20;		
+		this.item20 = SLOT20;*/
+		
+		this.item1 = EMPTYSLOT;
+		this.item2 = EMPTYSLOT;
+		this.item3 = EMPTYSLOT;
+		this.item4 = EMPTYSLOT;
+		this.item5 = EMPTYSLOT;
+		this.item6 = EMPTYSLOT;
+		this.item7 = EMPTYSLOT;
+		this.item8 = EMPTYSLOT;
+		this.item9 = EMPTYSLOT;
+		this.item10 = EMPTYSLOT;
+		this.item11 = EMPTYSLOT;
+		this.item12 = EMPTYSLOT;
+		this.item13 = EMPTYSLOT;
+		this.item14 = EMPTYSLOT;
+		this.item15 = EMPTYSLOT;
+		this.item16 = EMPTYSLOT;
+		this.item17 = EMPTYSLOT;
+		this.item18 = EMPTYSLOT;
+		this.item19 = EMPTYSLOT;
+		this.item20 = EMPTYSLOT;
 	}
 
 	public int getIdMochila() {
@@ -217,6 +238,7 @@ public class Mochila {
 		this.item20 = item20;
 	}
 
+	private static final int EMPTYSLOT = -1;
 	private static final int SLOT1 = 1;
 	private static final int SLOT2 = 2;
 	private static final int SLOT3 = 3;

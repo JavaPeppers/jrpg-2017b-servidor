@@ -33,8 +33,9 @@ public class ActualizarPersonaje extends ComandosServer {
                     getGson().toJson(escuchaCliente.getPaquetePersonaje()));
             } catch (IOException e) {
                 Servidor.log.append("Falló al intentar enviar "
-                    + "paquetePersonaje a:" + conectado.getPaquetePersonaje().
+                    + "paquetePersonaje a: " + conectado.getPaquetePersonaje().
                     getId() + "\n");
+                Servidor.log.append(e.getMessage() + "\n");
             }
         }
    }
