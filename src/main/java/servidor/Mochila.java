@@ -27,6 +27,7 @@ public class Mochila {
 	
 	public Mochila(int idMochila) {
 		this.idMochila = idMochila;
+
 		/*this.item1 = SLOT1;
 		this.item2 = SLOT2;
 		this.item3 = SLOT3;
@@ -68,6 +69,8 @@ public class Mochila {
 		this.item18 = EMPTYSLOT;
 		this.item19 = EMPTYSLOT;
 		this.item20 = EMPTYSLOT;
+
+
 	}
 
 	public int getIdMochila() {

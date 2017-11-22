@@ -184,6 +184,26 @@ public class Conector {
 					+ inventario.getidInventario() + System.lineSeparator());
 
 			final Mochila bag = new Mochila(pj.getId());
+			bag.setItem1(-1);
+			bag.setItem2(-1);
+			bag.setItem3(-1);
+			bag.setItem4(-1);
+			bag.setItem5(-1);
+			bag.setItem6(-1);
+			bag.setItem7(-1);
+			bag.setItem8(-1);
+			bag.setItem9(-1);
+			bag.setItem10(-1);
+			bag.setItem11(-1);
+			bag.setItem12(-1);
+			bag.setItem13(-1);
+			bag.setItem14(-1);
+			bag.setItem15(-1);
+			bag.setItem16(-1);
+			bag.setItem17(-1);
+			bag.setItem18(-1);
+			bag.setItem19(-1);
+			bag.setItem20(-1);
 			session.save(bag);
 
 			Servidor.log.append("4 - " + user.getUsername() + "  termino de crear mochila: " + bag.getIdMochila()
@@ -336,16 +356,20 @@ public class Conector {
 			// Session sessionItem = factory.openSession();
 			Query queryitem;
 
+
 			//int i = 2;
 			//int j = 1;
 			int i =1;
-			Mochila resultadoItemsID;
+			int j = 0;
 
+			Mochila resultadoItemsID;
+			paquetePersonaje.eliminarItems();
 			if (resultadoItemsIDList != null && !resultadoItemsIDList.isEmpty()) {
 
 				resultadoItemsID = resultadoItemsIDList.get(0);
 
-				//while (j <= CANTITEMS) {
+
+			
 				while (i <= CANTITEMS) {
 					if (resultadoItemsID.getByItemId(i) != -1) {// si hay algo
 
@@ -415,18 +439,22 @@ public class Conector {
 			queryMochila.setParameter("idMochila", dbPersonaje.getidMochila());
 			Mochila mochila = (Mochila) queryMochila.getSingleResult();
 			
+			Servidor.log.append(mochila.getItem1() + System.lineSeparator());
 			Query queryitem;
 
-			//int i = 2;
+
+		
+
 			int i = 1;
 			int j = 0;
 			Mochila resultadoItemsID;
 			dbPersonaje.eliminarItems();	
+			
 			if (mochila != null) {
 				
 				
 
-				while (j <= CANTITEMS) {
+				while (j < CANTITEMS) {
 					if (mochila.getByItemId(i) != -1) {// si hay algo
 
 						queryitem = session.createQuery("FROM ItemHb WHERE idItem = :idItem");
@@ -579,10 +607,9 @@ public class Conector {
 			PaquetePersonaje dbPersonaje = (PaquetePersonaje) queryPersonaje.getSingleResult();
 			*/
 			
-			//for (int i = 0; i < dbPersonaje.getCantItems(); i++) {
-			for (int i = 0; i < paquetePersonaje.getCantItems(); i++) {
-				value = i + 1;
-				query.setParameter("it" + value, paquetePersonaje.getItemID(i));
+			
+			for (int i = 1; i <= paquetePersonaje.getCantItems(); i++) {
+				query.setParameter("it" + i, paquetePersonaje.getItemID(i - 1));
 			}
 			
 			int itemGanado = new Random().nextInt(CANTITEMS + CANTITEMSMAXMOCHILA) + 1;
@@ -592,14 +619,21 @@ public class Conector {
 				value = paquetePersonaje.getCantItems() + 1;
 				query.setParameter("it" + value, itemGanado);
 				Servidor.log.append("Asigno" + System.lineSeparator());
+				paquetePersonaje.anadirItem(itemGanado);
 			}
 			
 			// seteo el resto vacio
+
 			//for (int j = dbPersonaje.getCantItems() + 2; j <= CANTITEMSMAXMOCHILA; j++) {
-			for (int j = paquetePersonaje.getCantItems() + 2; j <= CANTITEMSMAXMOCHILA; j++) {
+			for (int j = paquetePersonaje.getCantItems() + 1; j <= CANTITEMSMAXMOCHILA; j++) {
 				query.setParameter("it" + j, -1);
 			}
 			
+
+			/*for (int j = dbPersonaje.getCantItems() + 2; j <= CANTITEMSMAXMOCHILA; j++) {
+				query.setParameter("it" + j, 2);
+			}*/
+
 			query.setParameter("idMochila", paquetePersonaje.getidMochila());
 			
 			int result = query.executeUpdate();
