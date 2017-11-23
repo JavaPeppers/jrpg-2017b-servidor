@@ -452,6 +452,7 @@ public class Conector {
             personaje.setRaza(result.getString("raza"));
             personaje.setCasta(result.getString("casta"));
             personaje.setFuerza(result.getInt("fuerza"));
+            personaje.setFuerzaExtra(personaje.getFuerza());
             personaje.setInteligencia(result.getInt("inteligencia"));
             personaje.setDestreza(result.getInt("destreza"));
             personaje.setEnergiaTope(result.getInt("energiaTope"));
