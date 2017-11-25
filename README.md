@@ -16,10 +16,10 @@
 * Lautaro Perez ([LautaroPerez](https://github.com/LautaroPerez))
 * Micaela De Rito ([micaderito](https://github.com/micaderito))
 * Facundo Mediotte ([FMediotte96](https://github.com/FMediotte96))
-* Tomás Reynoso ([ThomiReynoso](https://github.com/FMediotte96))
-* Pablo Bermudez ([pablobermudez](https://github.com/pablobermudez))
-* Lisa Ayala ([lisa-ayala](https://github.com/lisa-ayala))
-* Alexis Sessarego ([Halaris](https://github.com/Halaris))
+* Thomas Reynoso ([ThomiReynoso](https://github.com/ThomiReynoso))
+* Agustín Pessolani ([APessolani](https://github.com/APessolani))
+* Facundo García Pena ([FGPena](https://github.com/FGPena))
+* Alejandro Brude ([abrude](https://github.com/abrude))
 
 ## Sobre la tecnología
 * Java 1.8
