@@ -433,7 +433,6 @@ public class Conector {
 			Query queryPersonaje = session.createQuery("from PaquetePersonaje where idPersonaje = :idPersonaje ");
 			queryPersonaje.setParameter("idPersonaje", idPersonaje);
 			dbPersonaje = (PaquetePersonaje) queryPersonaje.getSingleResult();
-			dbPersonaje.setFuerzaExtra(dbPersonaje.getFuerza());
 
 			// Traigo los id de los items correspondientes a mi personaje
 			Query queryMochila = session.createQuery("FROM Mochila WHERE idMochila = :idMochila");
