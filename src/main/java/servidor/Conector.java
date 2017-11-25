@@ -48,12 +48,26 @@ public class Conector {
 	/** Variable que indica la cant de items máximos en la mochila. **/
 	private static final int CANTITEMSMAXMOCHILA = 20;
 
+	/**
+	 * The factory.
+	 */
 	private SessionFactory factory;
 
+	/**
+	 * Gets the session factory.
+	 *
+	 * @return the session factory
+	 */
 	public SessionFactory getSessionFactory() {
 		return this.factory;
 	}
 
+	/**
+	 * Sets the session factory.
+	 *
+	 * @param factory
+	 *            the new session factory
+	 */
 	public void setSessionFactory(SessionFactory factory) {
 		this.factory = factory;
 	}
@@ -64,7 +78,7 @@ public class Conector {
 	public void connect() {
 		try {
 			Servidor.log.append("Estableciendo conexión " + "con la base de datos..." + System.lineSeparator());
-			
+
 			final Configuration cfg = new Configuration();
 			cfg.configure("hibernate.cfg.xml");
 			this.setSessionFactory(cfg.buildSessionFactory());
@@ -126,13 +140,14 @@ public class Conector {
 
 				session.close();
 
-				Servidor.log
-						.append("Error al intentar registrar el usuario " + user.getUsername() + System.lineSeparator());
+				Servidor.log.append(
+						"Error al intentar registrar el usuario " + user.getUsername() + System.lineSeparator());
 				return false;
 			}
 		} else {
-			// Si ya existe un usuario con ese nombre, cierro sesion, escribo el log y me voy
-			
+			// Si ya existe un usuario con ese nombre, cierro sesion, escribo el log y me
+			// voy
+
 			Servidor.log
 					.append("El usuario " + user.getUsername() + " ya se encuentra en uso." + System.lineSeparator());
 			return false;
@@ -143,6 +158,15 @@ public class Conector {
 		return true;
 	}
 
+	/**
+	 * Registrar personaje.
+	 *
+	 * @param pj
+	 *            the pj
+	 * @param user
+	 *            the user
+	 * @return true, if successful
+	 */
 	public boolean registrarPersonaje(PaquetePersonaje pj, PaqueteUsuario user) {
 
 		Session session = getSessionFactory().openSession();
@@ -217,8 +241,6 @@ public class Conector {
 		}
 
 	}
-
-	
 
 	/**
 	 * Método que se encarga de loguear al usuario.
@@ -295,7 +317,7 @@ public class Conector {
 			query.setParameter("inteligenciaSkill", paquetePersonaje.getInteligenciaSkill());
 			query.setParameter("destrezaSkill", paquetePersonaje.getDestrezaSkill());
 			query.setParameter("idPersonaje", paquetePersonaje.getId());
-			
+
 			int result = query.executeUpdate();
 
 			Query queryMochila = session.createQuery("FROM Mochila WHERE idMochila = :idMochila");
@@ -303,8 +325,7 @@ public class Conector {
 			List<Mochila> resultadoItemsIDList = queryMochila.list();
 			Query queryitem;
 
-
-			int i =1;
+			int i = 1;
 			int j = 0;
 
 			Mochila resultadoItemsID;
@@ -313,8 +334,6 @@ public class Conector {
 
 				resultadoItemsID = resultadoItemsIDList.get(0);
 
-
-			
 				while (i <= CANTITEMS) {
 					if (resultadoItemsID.getByItemId(i) != -1) {
 
@@ -331,7 +350,7 @@ public class Conector {
 								resultadoDatoItem.getBonusEnergia(), resultadoDatoItem.getBonusFuerza(),
 								resultadoDatoItem.getBonusDestreza(), resultadoDatoItem.getBonusInteligencia(),
 								resultadoDatoItem.getFoto(), resultadoDatoItem.getFotoEquipado());
-			
+
 					}
 					i++;
 				}
@@ -382,21 +401,16 @@ public class Conector {
 			Query queryMochila = session.createQuery("FROM Mochila WHERE idMochila = :idMochila");
 			queryMochila.setParameter("idMochila", dbPersonaje.getidMochila());
 			Mochila mochila = (Mochila) queryMochila.getSingleResult();
-			
+
 			Servidor.log.append(mochila.getItem1() + System.lineSeparator());
 			Query queryitem;
-
-
-		
 
 			int i = 1;
 			int j = 0;
 			Mochila resultadoItemsID;
-			dbPersonaje.eliminarItems();	
-			
+			dbPersonaje.eliminarItems();
+
 			if (mochila != null) {
-				
-				
 
 				while (j < CANTITEMS) {
 					if (mochila.getByItemId(i) != -1) {
@@ -405,7 +419,7 @@ public class Conector {
 						queryitem.setParameter("idItem", mochila.getByItemId(i));
 
 						ItemHb resultadoDatoItem = (ItemHb) queryitem.getSingleResult();
-					
+
 						dbPersonaje.anadirItem(resultadoDatoItem.getIdItem(), resultadoDatoItem.getNombre(),
 								resultadoDatoItem.getWereable(), resultadoDatoItem.getBonusSalud(),
 								resultadoDatoItem.getBonusEnergia(), resultadoDatoItem.getBonusFuerza(),
@@ -415,9 +429,9 @@ public class Conector {
 					i++;
 					j++;
 				}
-				
+
 				tx.commit();
-				
+
 			}
 		}
 
@@ -481,7 +495,7 @@ public class Conector {
 		Transaction tx = null;
 
 		int value = 0;
-		
+
 		try {
 			tx = session.beginTransaction();
 			Query query = session
@@ -531,7 +545,7 @@ public class Conector {
 		Transaction tx = null;
 
 		int value = 0;
-		
+
 		try {
 			PaquetePersonaje paquetePersonaje = Servidor.getPersonajesConectados().get(idPersonaje);
 			tx = session.beginTransaction();
@@ -544,33 +558,32 @@ public class Conector {
 							+ " WHERE idMochila = :idMochila");
 
 			// Seteo parametros items
-			
+
 			for (int i = 1; i <= paquetePersonaje.getCantItems(); i++) {
 				query.setParameter("it" + i, paquetePersonaje.getItemID(i - 1));
 			}
-			
+
 			int itemGanado = new Random().nextInt(CANTITEMS + CANTITEMSMAXMOCHILA) + 1;
-			
+
 			if (paquetePersonaje.getCantItems() < CANTITEMS) {
 				value = paquetePersonaje.getCantItems() + 1;
 				query.setParameter("it" + value, itemGanado);
 				Servidor.log.append("Asigno" + System.lineSeparator());
 				paquetePersonaje.anadirItem(itemGanado);
 			}
-			
+
 			// seteo el resto vacio
 
 			for (int j = paquetePersonaje.getCantItems() + 1; j <= CANTITEMSMAXMOCHILA; j++) {
 				query.setParameter("it" + j, -1);
 			}
-			
+
 			query.setParameter("idMochila", paquetePersonaje.getidMochila());
-			
+
 			int result = query.executeUpdate();
-			
+
 			tx.commit();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			if (tx != null)
 				tx.rollback();
 			Servidor.log.append("Fallo al intentar actualizar inventario" + System.lineSeparator());

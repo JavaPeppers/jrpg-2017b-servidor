@@ -8,12 +8,15 @@ import servidor.Servidor;
  */
 public class TinyDaddy extends ComandosServer {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see mensajeria.Comando#ejecutar()
 	 */
 	@Override
 	public void ejecutar() {
-		PaquetePersonaje paquetePersonaje  = (PaquetePersonaje) getGson().fromJson(getCadenaLeida(), PaquetePersonaje.class);
+		PaquetePersonaje paquetePersonaje = (PaquetePersonaje) getGson().fromJson(getCadenaLeida(),
+				PaquetePersonaje.class);
 		Servidor.getPersonajesConectados().get(paquetePersonaje.getId()).setTinyDaddy();
 		synchronized (Servidor.atencionConexiones) {
 			Servidor.atencionConexiones.notify();
