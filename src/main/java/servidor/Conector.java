@@ -124,11 +124,10 @@ public class Conector {
 					transaccion.rollback();
 				e.printStackTrace();
 
-				// HibernateUtil.closeThreadSession(session, factory);
 				session.close();
 
 				Servidor.log
-						.append("Eror al intentar registrar el usuario " + user.getUsername() + System.lineSeparator());
+						.append("Error al intentar registrar el usuario " + user.getUsername() + System.lineSeparator());
 				return false;
 			}
 		} else {
@@ -153,23 +152,14 @@ public class Conector {
 			// Personaje
 
 			session.save(pj);
-			Servidor.log.append(
-					"1 - " + user.getUsername() + " ha creado el personaje: " + pj.getId() + System.lineSeparator());
 			// update Usuario
-			// pj.setId((Integer) session.save(pj));
 
 			user.setIdPj(pj.getId());
-			// actualizarUsuario(user);
 			session.update(user);
-			Servidor.log.append("2 - " + user.getUsername() + "  termino de crear su pj: " + user.getIdPj()
-					+ System.lineSeparator());
 
 			// Registro inventario y mochila
 			final Inv inventario = new Inv(pj.getId());
 			session.save(inventario);
-
-			Servidor.log.append("3 - " + user.getUsername() + "  termino de crear inventario: "
-					+ inventario.getidInventario() + System.lineSeparator());
 
 			final Mochila bag = new Mochila(pj.getId());
 			bag.setItem1(-1);
@@ -194,9 +184,6 @@ public class Conector {
 			bag.setItem20(-1);
 			session.save(bag);
 
-			Servidor.log.append("4 - " + user.getUsername() + "  termino de crear mochila: " + bag.getIdMochila()
-					+ System.lineSeparator());
-
 			Query query = session.createQuery("UPDATE PaquetePersonaje SET idInventario= :idInventario,"
 					+ " idMochila= :idMochila WHERE idPersonaje= :idPersonaje");
 
@@ -204,9 +191,6 @@ public class Conector {
 			pj.setidMochila(bag.getIdMochila());
 			session.update(pj);
 			session.update(bag);
-
-			Servidor.log.append("5 - " + user.getUsername() + "  updateo su mochila e inventario " + pj.getidMochila()
-					+ " inv: " + pj.getidInventario() + System.lineSeparator());
 
 			transaccion.commit();
 
@@ -274,7 +258,6 @@ public class Conector {
 			Servidor.log.append(e.getMessage() + System.lineSeparator());
 			return false;
 		} finally {
-			// HibernateUtil.closeThreadSession(session, factory);
 			session.close();
 		}
 
@@ -317,14 +300,10 @@ public class Conector {
 
 			Query queryMochila = session.createQuery("FROM Mochila WHERE idMochila = :idMochila");
 			queryMochila.setParameter("idMochila", paquetePersonaje.getId());
-			// Mochila resultadoItemsID = (Mochila) queryMochila.getSingleResult();
 			List<Mochila> resultadoItemsIDList = queryMochila.list();
-			// Session sessionItem = factory.openSession();
 			Query queryitem;
 
 
-			//int i = 2;
-			//int j = 1;
 			int i =1;
 			int j = 0;
 
@@ -337,7 +316,7 @@ public class Conector {
 
 			
 				while (i <= CANTITEMS) {
-					if (resultadoItemsID.getByItemId(i) != -1) {// si hay algo
+					if (resultadoItemsID.getByItemId(i) != -1) {
 
 						queryitem = session.createQuery("FROM ItemHb WHERE idItem = :idItem");
 						queryitem.setParameter("idItem", resultadoItemsID.getByItemId(i));
@@ -355,7 +334,6 @@ public class Conector {
 			
 					}
 					i++;
-					//j++;
 				}
 				tx.commit();
 			}
@@ -421,7 +399,7 @@ public class Conector {
 				
 
 				while (j < CANTITEMS) {
-					if (mochila.getByItemId(i) != -1) {// si hay algo
+					if (mochila.getByItemId(i) != -1) {
 
 						queryitem = session.createQuery("FROM ItemHb WHERE idItem = :idItem");
 						queryitem.setParameter("idItem", mochila.getByItemId(i));
@@ -461,7 +439,7 @@ public class Conector {
 	 *            Nombre de usuario
 	 * @return PaqueteUsuario con los datos del usuario
 	 */
-	public PaqueteUsuario getUsuario(final String usuario) {// HBN DONE!
+	public PaqueteUsuario getUsuario(final String usuario) {
 		Session session = getSessionFactory().openSession();
 
 		Transaction tx = null;
@@ -496,7 +474,7 @@ public class Conector {
 	 * @param paquetePersonaje
 	 *            datos del personaje a actualizar.
 	 */
-	public void actualizarInventario(final PaquetePersonaje paquetePersonaje) {// HBN DONE!
+	public void actualizarInventario(final PaquetePersonaje paquetePersonaje) {
 
 		Session session = getSessionFactory().openSession();
 
@@ -519,7 +497,6 @@ public class Conector {
 				query.setParameter("it" + value, paquetePersonaje.getItemID(i));
 			}
 			// seteo el resto vacio
-			//for (int j = paquetePersonaje.getCantItems(); j < CANTITEMSMAXMOCHILA; j++) {
 			int valueForEmptySlots = 0;
 			for (int j = value; j < CANTITEMSMAXMOCHILA; j++) {
 				valueForEmptySlots = j + 1;
@@ -567,12 +544,6 @@ public class Conector {
 							+ " WHERE idMochila = :idMochila");
 
 			// Seteo parametros items
-		
-			/*Query queryPersonaje = session.createQuery("from PaquetePersonaje where idPersonaje = :idPersonaje ");
-			queryPersonaje.setParameter("idPersonaje", idPersonaje);
-			PaquetePersonaje dbPersonaje = (PaquetePersonaje) queryPersonaje.getSingleResult();
-			*/
-			
 			
 			for (int i = 1; i <= paquetePersonaje.getCantItems(); i++) {
 				query.setParameter("it" + i, paquetePersonaje.getItemID(i - 1));
@@ -580,7 +551,6 @@ public class Conector {
 			
 			int itemGanado = new Random().nextInt(CANTITEMS + CANTITEMSMAXMOCHILA) + 1;
 			
-			//if (dbPersonaje.getCantItems() < CANTITEMS) {
 			if (paquetePersonaje.getCantItems() < CANTITEMS) {
 				value = paquetePersonaje.getCantItems() + 1;
 				query.setParameter("it" + value, itemGanado);
@@ -590,16 +560,10 @@ public class Conector {
 			
 			// seteo el resto vacio
 
-			//for (int j = dbPersonaje.getCantItems() + 2; j <= CANTITEMSMAXMOCHILA; j++) {
 			for (int j = paquetePersonaje.getCantItems() + 1; j <= CANTITEMSMAXMOCHILA; j++) {
 				query.setParameter("it" + j, -1);
 			}
 			
-
-			/*for (int j = dbPersonaje.getCantItems() + 2; j <= CANTITEMSMAXMOCHILA; j++) {
-				query.setParameter("it" + j, 2);
-			}*/
-
 			query.setParameter("idMochila", paquetePersonaje.getidMochila());
 			
 			int result = query.executeUpdate();
