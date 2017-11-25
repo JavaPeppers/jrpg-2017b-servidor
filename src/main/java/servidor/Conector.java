@@ -34,13 +34,6 @@ import dominio.Item;
 /**
  * Clase que se encarga de la comunicación con la base de datos.
  */
-/* 20/11/2017
- *TODO:  getpersonaje graba bonus del item en tabla como atributo de personaje, eso esta bien?
-  cuando se ejecuta actualizarPerosnaje linea 302, vuelve en la base los atributos a los "base"
-  luego de ganar un pvp, si ya se tiene un item, al abrir el inventario va a aparecer un item duplicado (caso concreto, tenia 1 item, gane otro, 
-  y aparecio el item1 duplicado, pero no en la base, al presionar Exit, se ejecuta actualizarInventario, y lo graba
-  */
-
 public class Conector {
 
 	/** url de la base de datos. **/
@@ -71,8 +64,7 @@ public class Conector {
 	public void connect() {
 		try {
 			Servidor.log.append("Estableciendo conexión " + "con la base de datos..." + System.lineSeparator());
-			/* connect = DriverManager.getConnection("jdbc:sqlite:" + url); */
-
+			
 			final Configuration cfg = new Configuration();
 			cfg.configure("hibernate.cfg.xml");
 			this.setSessionFactory(cfg.buildSessionFactory());
@@ -88,7 +80,6 @@ public class Conector {
 	/** Método que cierra la conexión con la base de datos. **/
 	public void close() {
 		try {
-			// connect.close();
 			this.getSessionFactory().close();
 		} catch (HibernateException ex) {
 			Servidor.log
@@ -141,15 +132,12 @@ public class Conector {
 				return false;
 			}
 		} else {
-			// Si ya existe un usuario con ese nombre, cierro sesion, escribo el log y me
-			// voy
-			session.close();
+			// Si ya existe un usuario con ese nombre, cierro sesion, escribo el log y me voy
+			
 			Servidor.log
 					.append("El usuario " + user.getUsername() + " ya se encuentra en uso." + System.lineSeparator());
 			return false;
 		}
-
-		// HibernateUtil.closeThreadSession(session, factory);
 		session.close();
 
 		Servidor.log.append("El usuario " + user.getUsername() + " se ha registrado." + System.lineSeparator());
@@ -246,29 +234,7 @@ public class Conector {
 
 	}
 
-	public void actualizarUsuario(PaqueteUsuario user) {
-		// Preparo sesion de hibernate
-		Session session = getSessionFactory().openSession();
-
-		try {
-			// Preparo el criteria
-			CriteriaBuilder cBuilder = session.getCriteriaBuilder();
-			CriteriaQuery<PaqueteUsuario> cQuery = cBuilder.createQuery(PaqueteUsuario.class);
-			Root<PaqueteUsuario> root = cQuery.from(PaqueteUsuario.class);
-
-			// Actualizo el usuario
-			// Transaction transaccion = session.beginTransaction();
-			session.update(user);
-			// transaccion.commit();
-		} catch (HibernateException e) {
-			Servidor.log.append("Error al actualizar usuario " + user.getUsername() + System.lineSeparator());
-			Servidor.log.append(e.getMessage() + System.lineSeparator());
-		} finally {
-			session.close();
-			// HibernateUtil.closeThreadSession(session, factory);
-		}
-
-	}
+	
 
 	/**
 	 * Método que se encarga de loguear al usuario.
@@ -346,7 +312,7 @@ public class Conector {
 			query.setParameter("inteligenciaSkill", paquetePersonaje.getInteligenciaSkill());
 			query.setParameter("destrezaSkill", paquetePersonaje.getDestrezaSkill());
 			query.setParameter("idPersonaje", paquetePersonaje.getId());
-
+			
 			int result = query.executeUpdate();
 
 			Query queryMochila = session.createQuery("FROM Mochila WHERE idMochila = :idMochila");
